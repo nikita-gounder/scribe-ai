@@ -25,7 +25,7 @@ Combined with a brief study context (population, outcome, journal style), Scribe
 
 ## Core User Flow
 1. Upload analysis outputs (CSV, PNG, JPG, or pasted R text) — drag and drop
-2. Fill out study context form (title, population, primary outcome, statistical methods used, target journal style)
+2. Fill out study context form (title, population, outcome, journal style)
 3. Review uploaded files and context summary
 4. Click Generate — receive Methods and Results sections in seconds
 5. Iterate via chat panel ("make this more concise", "add clinical interpretation", "rewrite for general audience")
