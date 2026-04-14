@@ -14,7 +14,7 @@ Rules:
 - Do not add interpretation or discussion — that belongs in the Discussion section
 - Never hallucinate statistics, sample sizes, or results not present in the inputs
 
-Output format: Return a JSON object with this exact structure:
+You must respond with ONLY a valid JSON object in this exact format, no markdown, no backticks, no explanation:
 {
   "methods": "full methods section text here",
   "results": "full results section text here"

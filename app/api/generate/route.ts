@@ -1,46 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-import { buildUserPrompt, MANUSCRIPT_SYSTEM_PROMPT } from '@/lib/prompts'
+import { MANUSCRIPT_SYSTEM_PROMPT, buildUserPrompt } from '@/lib/prompts'
 import { GenerateRequest } from '@/types'
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 export async function POST(req: NextRequest) {
   try {
     const body: GenerateRequest = await req.json()
     const { files, context } = body
 
-    const imageFiles = files.filter((f) => f.type === 'image')
-    const nonImageFiles = files.filter((f) => f.type !== 'image')
-    const userContent: OpenAI.Chat.Completions.ChatCompletionContentPart[] = []
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
 
-    userContent.push({
-      type: 'text',
-      text: buildUserPrompt(nonImageFiles, context),
-    })
+    const nonImageFiles = files.filter((f) => f.type !== 'image')
+    const imageFiles = files.filter((f) => f.type === 'image')
+
+    const textPrompt = MANUSCRIPT_SYSTEM_PROMPT + '\n\n' + buildUserPrompt(nonImageFiles, context)
+
+    const contentParts: Array<
+      | { text: string }
+      | { inlineData: { mimeType: string; data: string } }
+    > = [{ text: textPrompt }]
 
     for (const img of imageFiles) {
-      userContent.push({
-        type: 'image_url',
-        image_url: {
-          url: `data:image/png;base64,${img.parsedContent}`,
-          detail: 'high',
+      contentParts.push({
+        inlineData: {
+          mimeType: 'image/png',
+          data: img.parsedContent,
         },
       })
     }
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: MANUSCRIPT_SYSTEM_PROMPT },
-        { role: 'user', content: userContent },
-      ],
-      response_format: { type: 'json_object' },
-      max_tokens: 4000,
-    })
+    const result = await model.generateContent(contentParts)
+    const response = await result.response
+    let raw = response.text()
 
-    const raw = response.choices[0].message.content || '{}'
+    raw = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+
     const parsed = JSON.parse(raw)
 
     return NextResponse.json({
