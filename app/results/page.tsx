@@ -1,3 +1,5 @@
+'use client'
+
 import IterationPanel from '@/components/IterationPanel'
 import ManuscriptOutput from '@/components/ManuscriptOutput'
 import { IterationMessage, ManuscriptSection } from '@/types'
