@@ -335,14 +335,14 @@ export default function Home() {
 
           <article className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Generate
+              📝 Generate
             </p>
             <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
-              Methods & Results, findings summaries, or analytical narratives
+              Generate
             </h3>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Turn raw outputs into polished written deliverables with the right level of detail
-              and structure.
+              Choose your tone and sections — Executive Summary, Key Findings, Methods,
+              Recommendations, and more
             </p>
           </article>
 
