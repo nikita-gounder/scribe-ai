@@ -1,83 +1,309 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 
-import { IterationMessage } from '@/types'
+import { parseCSV, parseImage, parseText } from '@/lib/parsers'
+import { cn } from '@/lib/utils'
+import { IterationMessage, ManuscriptSection, StudyContext, UploadedFile } from '@/types'
 
 interface IterationPanelProps {
+  context: StudyContext
   messages: IterationMessage[]
-  onSendMessage: (message: string) => void
+  originalSections: ManuscriptSection[]
+  onMessagesChange: (messages: IterationMessage[]) => void
+  onSectionsUpdate: (sections: ManuscriptSection[]) => void
   isLoading: boolean
+  onLoadingChange: (isLoading: boolean) => void
+}
+
+const ACCEPTED_INPUT = '.csv,.png,.jpg,.jpeg,.txt'
+const MAX_FILE_SIZE = 10 * 1024 * 1024
+
+function PaperclipIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M21 11.5 12.9 19.6a5 5 0 1 1-7.1-7.1L14 4.3a3.5 3.5 0 1 1 5 5L10.7 17.6a2 2 0 1 1-2.8-2.8l7.1-7.1" />
+    </svg>
+  )
+}
+
+function TypingDots() {
+  return (
+    <div className="inline-flex items-center gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-500 shadow-sm">
+      <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.2s]" />
+      <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.1s]" />
+      <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
+    </div>
+  )
+}
+
+async function parseAdditionalFile(file: File): Promise<UploadedFile> {
+  const lowerName = file.name.toLowerCase()
+
+  if (lowerName.endsWith('.csv') || file.type === 'text/csv') {
+    return parseCSV(file)
+  }
+  if (
+    lowerName.endsWith('.png') ||
+    lowerName.endsWith('.jpg') ||
+    lowerName.endsWith('.jpeg') ||
+    file.type.startsWith('image/')
+  ) {
+    return parseImage(file)
+  }
+  if (lowerName.endsWith('.txt') || file.type.startsWith('text/')) {
+    return parseText(file)
+  }
+
+  throw new Error('Unsupported file type')
 }
 
 export default function IterationPanel({
+  context,
   messages,
-  onSendMessage,
+  originalSections,
+  onMessagesChange,
+  onSectionsUpdate,
   isLoading,
+  onLoadingChange,
 }: IterationPanelProps) {
   const [draft, setDraft] = useState('')
+  const [additionalFiles, setAdditionalFiles] = useState<UploadedFile[]>([])
+  const [additionalFileNames, setAdditionalFileNames] = useState<string[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const hasMessages = messages.length > 0
+  const placeholderExamples = useMemo(
+    () =>
+      "Ask me to refine your manuscript. Examples: 'Make the methods more concise', 'Add interpretation to the results', 'Rewrite for a general audience', 'Add the p-value for NPTX2'",
+    []
+  )
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: 'smooth',
+    })
+  }, [isLoading, messages])
+
+  async function handleFileSelect(fileList: FileList | null) {
+    if (!fileList) return
+
+    const selectedFiles = Array.from(fileList)
+    const parsedFiles: UploadedFile[] = []
+    const parsedNames: string[] = []
+
+    for (const file of selectedFiles) {
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`${file.name} exceeds the 10MB file size limit.`)
+        continue
+      }
+
+      try {
+        const parsed = await parseAdditionalFile(file)
+        parsedFiles.push(parsed)
+        parsedNames.push(file.name)
+      } catch {
+        setError(`Unsupported file type for ${file.name}.`)
+      }
+    }
+
+    if (parsedFiles.length > 0) {
+      setError(null)
+      setAdditionalFiles((current) => [...current, ...parsedFiles])
+      setAdditionalFileNames((current) => [...current, ...parsedNames])
+    }
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!draft.trim() || isLoading) return
+    const newMessage = draft.trim()
+    if (!newMessage || isLoading) return
 
-    onSendMessage(draft.trim())
+    setError(null)
     setDraft('')
+    onLoadingChange(true)
+
+    try {
+      const response = await fetch('/api/iterate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages,
+          newMessage,
+          additionalFiles,
+          originalSections,
+          context,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Iteration failed')
+      }
+
+      const data: {
+        message: string
+        updatedSections: ManuscriptSection[]
+      } = await response.json()
+
+      const nextMessages: IterationMessage[] = [
+        ...messages,
+        { role: 'user', content: newMessage },
+        {
+          role: 'assistant',
+          content: data.message || 'Sections updated.',
+          updatedSections: data.updatedSections,
+        },
+      ]
+
+      onMessagesChange(nextMessages)
+
+      if (data.updatedSections?.length > 0) {
+        onSectionsUpdate(data.updatedSections)
+      }
+
+      setAdditionalFiles([])
+      setAdditionalFileNames([])
+    } catch {
+      setError('Iteration failed — please try again')
+      onMessagesChange([
+        ...messages,
+        { role: 'user', content: newMessage },
+        { role: 'assistant', content: 'Iteration failed — please try again' },
+      ])
+    } finally {
+      onLoadingChange(false)
+    }
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Iteration Panel
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-950">Refine the Draft</h2>
-        </div>
-        {isLoading && (
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-            Thinking
-          </span>
-        )}
+    <div className="flex h-full min-h-[44rem] flex-col rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-sm sm:p-5">
+      <div className="border-b border-slate-200 px-2 pb-4">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Iteration Panel
+        </p>
+        <h2 className="mt-2 text-2xl font-semibold text-slate-950">Refine the Draft</h2>
       </div>
 
-      <div className="mt-6 space-y-3">
-        {messages.length > 0 ? (
-          messages.map((message, index) => (
-            <div
-              key={`${message.role}-${index}`}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                {message.role}
-              </p>
-              <p className="mt-2 text-sm leading-7 text-slate-700">{message.content}</p>
-            </div>
-          ))
+      <div ref={scrollRef} className="mt-4 flex-1 space-y-4 overflow-y-auto px-1 pb-4">
+        {hasMessages ? (
+          messages.map((message, index) => {
+            const isUser = message.role === 'user'
+
+            return (
+              <div
+                key={`${message.role}-${index}`}
+                className={cn('flex', isUser ? 'justify-end' : 'justify-start')}
+              >
+                <div
+                  className={cn(
+                    'max-w-[90%] rounded-3xl px-4 py-3 shadow-sm',
+                    isUser
+                      ? 'bg-slate-900 text-white'
+                      : 'border border-slate-200 bg-white text-slate-800'
+                  )}
+                >
+                  <p className="whitespace-pre-wrap text-sm leading-7">{message.content}</p>
+
+                  {message.updatedSections && message.updatedSections.length > 0 && (
+                    <div className="mt-4 space-y-3 border-t border-slate-200/80 pt-4">
+                      {message.updatedSections.map((section) => (
+                        <div
+                          key={section.type}
+                          className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-800"
+                        >
+                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                            {section.type}
+                          </p>
+                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6">
+                            {section.content}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })
         ) : (
-          <p className="text-slate-500">Iteration Panel — Refine your output here</p>
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-6 text-sm leading-7 text-slate-600">
+            {placeholderExamples}
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="flex justify-start">
+            <TypingDots />
+          </div>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-3 border-t border-slate-200 pt-6">
-        <label className="block">
-          <span className="text-sm font-medium text-slate-900">Revision Request</span>
-          <textarea
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            placeholder='e.g. Make the Results section more concise and emphasize the ROC findings.'
-            className="mt-2 min-h-28 w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+      <div className="border-t border-slate-200 pt-4">
+        {additionalFileNames.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {additionalFileNames.map((name) => (
+              <span
+                key={name}
+                className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex items-end gap-3">
+          <input
+            ref={inputRef}
+            type="file"
+            multiple
+            accept={ACCEPTED_INPUT}
+            className="hidden"
+            onChange={(event) => {
+              void handleFileSelect(event.target.files)
+              event.target.value = ''
+            }}
           />
-        </label>
-        <button
-          type="submit"
-          disabled={isLoading || !draft.trim()}
-          className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-        >
-          {isLoading ? 'Sending...' : 'Send refinement request'}
-        </button>
-      </form>
+
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-600 transition hover:border-slate-400 hover:text-slate-900"
+            aria-label="Upload additional context"
+          >
+            <PaperclipIcon />
+          </button>
+
+          <div className="flex-1">
+            <textarea
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              placeholder="Describe how you want the draft refined"
+              className="min-h-24 w-full rounded-3xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={!draft.trim() || isLoading}
+            className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

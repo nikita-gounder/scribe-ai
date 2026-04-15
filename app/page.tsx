@@ -44,6 +44,12 @@ export default function Home() {
       studyContext.statisticalMethods.trim()
   )
   const canGenerate = uploadedFiles.length > 0 && hasRequiredContext
+  const generateTooltip =
+    uploadedFiles.length === 0
+      ? 'Upload at least one analysis file'
+      : !hasRequiredContext
+        ? 'Please fill in all required fields'
+        : ''
 
   async function handleGenerate() {
     if (!canGenerate || isGenerating) return
@@ -72,64 +78,75 @@ export default function Home() {
       sessionStorage.setItem('scribe_context', JSON.stringify(studyContext))
       router.push('/results')
     } catch {
-      setGenerateError('Generation failed. Please check your API key and try again.')
+      setGenerateError('Generation failed — please try again')
+      window.setTimeout(() => setGenerateError(null), 3500)
     } finally {
       setIsGenerating(false)
     }
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-10 lg:px-10">
-        <section className="rounded-[2rem] border border-slate-200 bg-white px-8 py-10 shadow-sm">
-          <div className="flex flex-col gap-8">
-            <div className="max-w-3xl space-y-4">
-              <span className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-slate-600">
-                Scribe
-              </span>
-              <div className="space-y-3">
-                <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-                  Transform analysis outputs into manuscript-ready Methods and Results.
-                </h1>
-                <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-                  Upload tables, figures, and model summaries, add concise study context, and
-                  prepare your manuscript draft in a guided three-step workflow.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-3">
-              {steps.map((step) => {
-                const isActive = currentStep === step.id
-                const isComplete = currentStep > step.id
-
-                return (
-                  <div
-                    key={step.id}
-                    className={`rounded-2xl border px-4 py-4 transition ${
-                      isActive
-                        ? 'border-slate-900 bg-slate-900 text-white'
-                        : isComplete
-                          ? 'border-slate-300 bg-slate-100 text-slate-700'
-                          : 'border-slate-200 bg-white text-slate-500'
-                    }`}
-                  >
-                    <p className="text-xs font-medium uppercase tracking-[0.2em]">
-                      Step {step.id}
-                    </p>
-                    <p className="mt-2 text-lg font-semibold">{step.label}</p>
-                  </div>
-                )
-              })}
-            </div>
+    <main className="min-h-screen bg-white text-slate-900">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-8 lg:px-10">
+        <header className="flex flex-col gap-6 rounded-[2rem] border border-slate-100 bg-white px-6 py-6 shadow-sm sm:px-8">
+          <div className="space-y-2">
+            <h1 className="font-serif text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+              Scribe
+            </h1>
+            <p className="text-base text-slate-600">
+              Turn your analysis into manuscript sections instantly
+            </p>
           </div>
-        </section>
 
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="grid gap-4 md:grid-cols-3">
+            {steps.map((step) => {
+              const isActive = currentStep === step.id
+              const isComplete = currentStep > step.id
+
+              return (
+                <div
+                  key={step.id}
+                  className={cn(
+                    'rounded-2xl border border-slate-100 px-4 py-4 transition-all duration-300',
+                    isActive ? 'bg-slate-50 shadow-sm' : 'bg-white',
+                    isComplete ? 'border-slate-200' : ''
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={cn(
+                        'inline-flex h-9 w-9 items-center justify-center rounded-full border text-sm font-semibold transition',
+                        isComplete || isActive
+                          ? 'border-slate-900 bg-slate-900 text-white'
+                          : 'border-slate-200 bg-white text-slate-500'
+                      )}
+                    >
+                      {step.id}
+                    </span>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        Step {step.id}
+                      </p>
+                      <p className="text-lg font-semibold text-slate-900">{step.label}</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </header>
+
+        {generateError && (
+          <div className="fixed right-6 top-6 z-50 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 shadow-lg">
+            {generateError}
+          </div>
+        )}
+
+        <section className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 sm:p-8">
           {currentStep === 1 && (
-            <div className="space-y-6">
+            <div className="animate-fade-in space-y-6">
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold text-slate-950">Step 1: Upload inputs</h2>
+                <h2 className="text-2xl font-semibold text-slate-900">Step 1: Upload inputs</h2>
                 <p className="text-sm leading-6 text-slate-600">
                   Add CSV tables, image files, or pasted statistical output to start building the
                   study package that Scribe will use for drafting.
@@ -143,7 +160,7 @@ export default function Home() {
                   type="button"
                   onClick={() => setCurrentStep(2)}
                   disabled={!canContinueFromUpload}
-                  className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                  className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
                   Continue to study context
                 </button>
@@ -152,9 +169,9 @@ export default function Home() {
           )}
 
           {currentStep === 2 && (
-            <div className="space-y-6">
+            <div className="animate-fade-in space-y-6">
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold text-slate-950">Step 2: Add study context</h2>
+                <h2 className="text-2xl font-semibold text-slate-900">Step 2: Add study context</h2>
                 <p className="text-sm leading-6 text-slate-600">
                   Provide the core study details so Scribe can frame the manuscript text in the
                   correct academic style.
@@ -167,7 +184,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(1)}
-                  className="rounded-full border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                  className="rounded-full border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                 >
                   Back to upload
                 </button>
@@ -175,7 +192,7 @@ export default function Home() {
                   type="button"
                   onClick={() => setCurrentStep(3)}
                   disabled={!hasRequiredContext}
-                  className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                  className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
                   Review inputs
                 </button>
@@ -184,9 +201,9 @@ export default function Home() {
           )}
 
           {currentStep === 3 && (
-            <div className="space-y-6">
+            <div className="animate-fade-in space-y-6">
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold text-slate-950">Step 3: Review</h2>
+                <h2 className="text-2xl font-semibold text-slate-900">Step 3: Review</h2>
                 <p className="text-sm leading-6 text-slate-600">
                   Confirm your uploaded files and study metadata before generating manuscript
                   sections.
@@ -194,7 +211,7 @@ export default function Home() {
               </div>
 
               <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6">
                   <div className="flex items-center justify-between gap-4">
                     <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                       Files Uploaded
@@ -208,7 +225,7 @@ export default function Home() {
                       uploadedFiles.map((file) => (
                         <div
                           key={file.id}
-                          className="rounded-xl border border-slate-200 bg-white px-4 py-3"
+                          className="rounded-xl border border-slate-100 bg-white px-4 py-3"
                         >
                           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                             <p className="font-medium text-slate-900">{file.name}</p>
@@ -229,11 +246,11 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6">
                   <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
                     Study Context
                   </h3>
-                  <dl className="mt-4 space-y-4 rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
+                  <dl className="mt-4 space-y-4 rounded-2xl border border-slate-100 bg-white p-5 text-sm text-slate-600">
                     <div>
                       <dt className="font-medium text-slate-900">Title</dt>
                       <dd>{studyContext.title || 'Not provided'}</dd>
@@ -258,35 +275,70 @@ export default function Home() {
                 </div>
               </div>
 
-              {generateError && (
-                <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                  {generateError}
-                </div>
-              )}
-
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <button
-                  type="button"
-                  onClick={() => setCurrentStep(2)}
-                  className="rounded-full border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
-                >
-                  Back to context
-                </button>
-
+              <div className="flex flex-col gap-3">
                 <button
                   type="button"
                   onClick={() => void handleGenerate()}
                   disabled={!canGenerate || isGenerating}
-                  className="inline-flex items-center justify-center gap-3 rounded-full bg-slate-900 px-7 py-4 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                  title={generateTooltip}
+                  className="inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-slate-900 px-7 py-4 text-base font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
                   {isGenerating && (
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                   )}
                   {isGenerating ? 'Generating...' : 'Generate Manuscript Sections'}
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(2)}
+                  className="rounded-full border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  Back to context
+                </button>
               </div>
             </div>
           )}
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-3">
+          <article className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Upload
+            </p>
+            <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
+              CSV tables, PNG figures, R output text
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Bring together model summaries, regression tables, and analysis figures in one clean
+              workspace.
+            </p>
+          </article>
+
+          <article className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Generate
+            </p>
+            <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
+              Methods + Results in seconds
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Turn raw outputs into publication-ready sections with consistent academic style and
+              structured reporting.
+            </p>
+          </article>
+
+          <article className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Refine
+            </p>
+            <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
+              Chat to iterate and perfect
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Keep polishing tone, specificity, and clarity with natural-language revision
+              requests.
+            </p>
+          </article>
         </section>
       </div>
     </main>

@@ -1,83 +1,131 @@
 'use client'
 
 import { useState } from 'react'
+import { Document, HeadingLevel, Packer, Paragraph, TextRun } from 'docx'
 
-import { cn } from '@/lib/utils'
 import { ManuscriptSection } from '@/types'
 
 interface ManuscriptOutputProps {
   sections: ManuscriptSection[]
   isLoading: boolean
+  title: string
 }
 
-function formatSectionTitle(type: ManuscriptSection['type']) {
-  return type === 'methods' ? 'Methods' : 'Results'
+function ClipboardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M9 5.5h6" />
+      <path d="M8 4h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
+      <path d="M9 3h6v3H9z" />
+    </svg>
+  )
 }
 
-export default function ManuscriptOutput({ sections, isLoading }: ManuscriptOutputProps) {
+async function downloadDocx(sections: ManuscriptSection[], title: string) {
+  const doc = new Document({
+    sections: [
+      {
+        properties: {},
+        children: [
+          new Paragraph({
+            text: title,
+            heading: HeadingLevel.TITLE,
+          }),
+          new Paragraph({
+            text: 'Methods',
+            heading: HeadingLevel.HEADING_1,
+          }),
+          new Paragraph({
+            children: [new TextRun(sections.find((s) => s.type === 'methods')?.content || '')],
+          }),
+          new Paragraph({
+            text: 'Results',
+            heading: HeadingLevel.HEADING_1,
+          }),
+          new Paragraph({
+            children: [new TextRun(sections.find((s) => s.type === 'results')?.content || '')],
+          }),
+        ],
+      },
+    ],
+  })
+
+  const blob = await Packer.toBlob(doc)
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = 'scribe_manuscript.docx'
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
+export default function ManuscriptOutput({ sections, isLoading, title }: ManuscriptOutputProps) {
   const [copiedSection, setCopiedSection] = useState<ManuscriptSection['type'] | null>(null)
+  const animateKey = sections.map((section) => `${section.type}:${section.content.length}`).join('|')
 
   async function handleCopy(section: ManuscriptSection) {
     await navigator.clipboard.writeText(section.content)
     setCopiedSection(section.type)
-    window.setTimeout(() => setCopiedSection(null), 1800)
+    window.setTimeout(() => setCopiedSection(null), 2000)
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-      <div className="flex items-center justify-between gap-4">
+    <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
             Manuscript Output
           </p>
-          <h2 className="mt-2 text-2xl font-semibold text-slate-950">Generated Sections</h2>
+          <h2 className="mt-2 font-serif text-3xl font-semibold text-slate-900">
+            Draft Manuscript
+          </h2>
         </div>
-        {isLoading && (
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-            Generating
-          </span>
-        )}
+
+        <button
+          type="button"
+          onClick={() => void downloadDocx(sections, title || 'Scribe Manuscript')}
+          disabled={isLoading || sections.length === 0}
+          className="rounded-full border border-slate-200 bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        >
+          Download as .docx
+        </button>
       </div>
 
       <div className="mt-6">
         {isLoading ? (
           <div className="space-y-6">
-            <div className="animate-pulse space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-              <div className="h-5 w-24 rounded bg-slate-200" />
+            <div className="animate-pulse space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-6">
+              <div className="h-6 w-28 rounded bg-slate-200" />
               <div className="h-4 w-full rounded bg-slate-200" />
               <div className="h-4 w-11/12 rounded bg-slate-200" />
               <div className="h-4 w-10/12 rounded bg-slate-200" />
             </div>
-            <div className="animate-pulse border-t border-slate-200 pt-6">
-              <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                <div className="h-5 w-24 rounded bg-slate-200" />
-                <div className="h-4 w-full rounded bg-slate-200" />
-                <div className="h-4 w-11/12 rounded bg-slate-200" />
-                <div className="h-4 w-10/12 rounded bg-slate-200" />
-              </div>
+            <div className="animate-pulse space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-6">
+              <div className="h-6 w-28 rounded bg-slate-200" />
+              <div className="h-4 w-full rounded bg-slate-200" />
+              <div className="h-4 w-11/12 rounded bg-slate-200" />
+              <div className="h-4 w-10/12 rounded bg-slate-200" />
             </div>
           </div>
         ) : sections.length > 0 ? (
-          <div className="space-y-6">
-            {sections.map((section, index) => (
-              <section
-                key={section.type}
-                className={cn(index > 0 ? 'border-t border-slate-200 pt-6' : '')}
-              >
+          <div key={animateKey} className="space-y-10 animate-fade-in">
+            {sections.map((section) => (
+              <section key={section.type}>
                 <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-serif text-2xl font-semibold text-slate-950">
-                    {formatSectionTitle(section.type)}
+                  <h3 className="font-serif text-2xl font-semibold text-slate-900">
+                    {section.type === 'methods' ? 'Methods' : 'Results'}
                   </h3>
                   <button
                     type="button"
                     onClick={() => void handleCopy(section)}
-                    className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
                   >
-                    {copiedSection === section.type ? 'Copied' : 'Copy'}
+                    <ClipboardIcon />
+                    {copiedSection === section.type ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-6">
-                  <p className="whitespace-pre-wrap font-serif text-[1.05rem] leading-8 text-slate-700">
+                <div className="mt-4 rounded-3xl border border-slate-100 bg-slate-50 px-6 py-6">
+                  <p className="whitespace-pre-wrap font-serif text-[1.05rem] leading-8 text-slate-800">
                     {section.content}
                   </p>
                 </div>
@@ -85,7 +133,7 @@ export default function ManuscriptOutput({ sections, isLoading }: ManuscriptOutp
             ))}
           </div>
         ) : (
-          <p className="text-slate-500">Manuscript Output — Results will appear here</p>
+          <p className="text-sm text-slate-600">Generated manuscript sections will appear here.</p>
         )}
       </div>
     </div>

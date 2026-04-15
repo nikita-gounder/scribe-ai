@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const body: GenerateRequest = await req.json()
     const { files, context } = body
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
     const nonImageFiles = files.filter((f) => f.type !== 'image')
     const imageFiles = files.filter((f) => f.type === 'image')

@@ -20,7 +20,7 @@ Combined with a brief study context (population, outcome, journal style), Scribe
 - Next.js 14 (App Router)
 - TypeScript
 - Tailwind CSS
-- OpenAI API (gpt-4o)
+- Google Gemini API
 - Vercel (deployment)
 
 ## Core User Flow
@@ -64,10 +64,17 @@ scribe-ai/
 - GenerateResponse: { sections: ManuscriptSection[], conversationId: string }
 
 ## Environment Variables
-OPENAI_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
 
 ## Demo Dataset
 The demo uses real CSF biomarker data from an FTD (frontotemporal dementia) proteomics study — including ROC curves, regression model outputs, and demographic tables — to show Scribe working on actual clinical research outputs.
 
 ## Deployment
-Deployed on Vercel. Live URL: [add after deployment]
+Deploy on Vercel:
+
+1. Import this repository into Vercel.
+2. Create a Vercel project secret named `gemini_api_key`.
+3. Set the production environment variable via [vercel.json](/Users/nikita/scribe-ai/vercel.json).
+4. Redeploy after updating the secret.
+
+Live URL: [add after deployment]

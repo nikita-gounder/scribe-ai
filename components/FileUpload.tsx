@@ -21,6 +21,7 @@ type PendingFile = {
 const ACCEPTED_EXTENSIONS = ['.csv', '.png', '.jpg', '.jpeg', '.txt']
 const ACCEPTED_INPUT = ACCEPTED_EXTENSIONS.join(',')
 const MAX_FILES = 10
+const MAX_FILE_SIZE = 10 * 1024 * 1024
 
 function formatFileSize(size: number) {
   if (size < 1024) return `${size} B`
@@ -87,7 +88,14 @@ export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
       return
     }
 
-    const validFiles = selectedFiles.filter((file) => getFileType(file))
+    const validFiles = selectedFiles.filter((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`${file.name} exceeds the 10MB file size limit.`)
+        return false
+      }
+
+      return Boolean(getFileType(file))
+    })
 
     if (validFiles.length !== selectedFiles.length) {
       setError('Only CSV, PNG, JPG, JPEG, and TXT files are supported.')
@@ -196,6 +204,11 @@ export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
           Accepted: {ACCEPTED_EXTENSIONS.join(' · ')} | Max {MAX_FILES} files
         </p>
       </button>
+
+      <p className="text-sm leading-6 text-slate-600">
+        Works with R model summaries, regression tables, ROC curves, forest plots, and any
+        analysis figure.
+      </p>
 
       {error && (
         <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">

@@ -22,6 +22,7 @@ export interface ManuscriptSection {
 export interface IterationMessage {
   role: 'user' | 'assistant'
   content: string
+  updatedSections?: ManuscriptSection[]
 }
 
 export interface GenerateRequest {
