@@ -6,14 +6,22 @@ import { useRouter } from 'next/navigation'
 
 import IterationPanel from '@/components/IterationPanel'
 import ManuscriptOutput from '@/components/ManuscriptOutput'
-import { GenerateResponse, IterationMessage, ManuscriptSection, StudyContext } from '@/types'
+import {
+  GenerateResponse,
+  IterationMessage,
+  ManuscriptSection,
+  OUTPUT_SECTION_LABELS,
+  StudyContext,
+  TONE_PRESETS,
+} from '@/types'
 
 const emptyContext: StudyContext = {
   title: '',
   population: '',
   primaryOutcome: '',
   statisticalMethods: '',
-  journalStyle: 'APA',
+  outputTone: 'academic',
+  outputSections: [...TONE_PRESETS.academic.defaultSections],
 }
 
 export default function ResultsPage() {
@@ -117,8 +125,8 @@ export default function ResultsPage() {
                     <dd>{context.title || 'Not provided'}</dd>
                   </div>
                   <div>
-                    <dt className="font-medium text-slate-900">Output Style</dt>
-                    <dd>{context.journalStyle}</dd>
+                    <dt className="font-medium text-slate-900">Tone</dt>
+                    <dd>{TONE_PRESETS[context.outputTone].label}</dd>
                   </div>
                   <div>
                     <dt className="font-medium text-slate-900">Sample / Dataset Description</dt>
@@ -132,14 +140,22 @@ export default function ResultsPage() {
                     <dt className="font-medium text-slate-900">Methods Used</dt>
                     <dd>{context.statisticalMethods || 'Not provided'}</dd>
                   </div>
+                  <div className="sm:col-span-2">
+                    <dt className="font-medium text-slate-900">Requested Sections</dt>
+                    <dd>
+                      {context.outputSections
+                        .map((section) => OUTPUT_SECTION_LABELS[section])
+                        .join(', ')}
+                    </dd>
+                  </div>
                 </dl>
               </div>
 
               <ManuscriptOutput
                 sections={sections}
                 isLoading={isLoading}
-                title={context.title || 'Scribe Manuscript'}
-                outputStyle={context.journalStyle}
+                title={context.title || 'Scribe Narrative'}
+                outputTone={context.outputTone}
               />
             </div>
 

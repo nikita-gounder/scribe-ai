@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from 'docx'
 
-import { ManuscriptSection, StudyContext } from '@/types'
+import { ManuscriptSection, OUTPUT_SECTION_LABELS, StudyContext } from '@/types'
 
 interface ManuscriptOutputProps {
   sections: ManuscriptSection[]
   isLoading: boolean
   title: string
-  outputStyle: StudyContext['journalStyle']
+  outputTone: StudyContext['outputTone']
 }
 
 function ClipboardIcon() {
@@ -22,40 +22,28 @@ function ClipboardIcon() {
   )
 }
 
-async function downloadDocx(
-  sections: ManuscriptSection[],
-  title: string,
-  outputStyle: StudyContext['journalStyle']
-) {
-  const methodsHeading =
-    outputStyle === 'Business' || outputStyle === 'Technical' ? 'Analytical Methods' : 'Methods'
-  const resultsHeading =
-    outputStyle === 'Business' || outputStyle === 'Technical' ? 'Key Findings' : 'Results'
+async function downloadDocx(sections: ManuscriptSection[], title: string) {
+  const children = [
+    new Paragraph({
+      text: title,
+      heading: HeadingLevel.TITLE,
+    }),
+    ...sections.flatMap((section) => [
+      new Paragraph({
+        text: OUTPUT_SECTION_LABELS[section.type],
+        heading: HeadingLevel.HEADING_1,
+      }),
+      new Paragraph({
+        children: [new TextRun(section.content)],
+      }),
+    ]),
+  ]
 
   const doc = new Document({
     sections: [
       {
         properties: {},
-        children: [
-          new Paragraph({
-            text: title,
-            heading: HeadingLevel.TITLE,
-          }),
-          new Paragraph({
-            text: methodsHeading,
-            heading: HeadingLevel.HEADING_1,
-          }),
-          new Paragraph({
-            children: [new TextRun(sections.find((s) => s.type === 'methods')?.content || '')],
-          }),
-          new Paragraph({
-            text: resultsHeading,
-            heading: HeadingLevel.HEADING_1,
-          }),
-          new Paragraph({
-            children: [new TextRun(sections.find((s) => s.type === 'results')?.content || '')],
-          }),
-        ],
+        children,
       },
     ],
   })
@@ -64,7 +52,7 @@ async function downloadDocx(
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
   anchor.href = url
-  anchor.download = 'scribe_manuscript.docx'
+  anchor.download = 'scribe_narrative.docx'
   anchor.click()
   URL.revokeObjectURL(url)
 }
@@ -73,11 +61,11 @@ export default function ManuscriptOutput({
   sections,
   isLoading,
   title,
-  outputStyle,
+  outputTone,
 }: ManuscriptOutputProps) {
   const [copiedSection, setCopiedSection] = useState<ManuscriptSection['type'] | null>(null)
   const animateKey = sections.map((section) => `${section.type}:${section.content.length}`).join('|')
-  const useAnalyticalHeaders = outputStyle === 'Business' || outputStyle === 'Technical'
+  void outputTone
 
   async function handleCopy(section: ManuscriptSection) {
     await navigator.clipboard.writeText(section.content)
@@ -99,7 +87,7 @@ export default function ManuscriptOutput({
 
         <button
           type="button"
-          onClick={() => void downloadDocx(sections, title || 'Scribe Narrative', outputStyle)}
+          onClick={() => void downloadDocx(sections, title || 'Scribe Narrative')}
           disabled={isLoading || sections.length === 0}
           className="rounded-full border border-slate-200 bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
         >
@@ -129,13 +117,7 @@ export default function ManuscriptOutput({
               <section key={section.type}>
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="font-serif text-2xl font-semibold text-slate-900">
-                    {section.type === 'methods'
-                      ? useAnalyticalHeaders
-                        ? 'Analytical Methods'
-                        : 'Methods'
-                      : useAnalyticalHeaders
-                        ? 'Key Findings'
-                        : 'Results'}
+                    {OUTPUT_SECTION_LABELS[section.type]}
                   </h3>
                   <button
                     type="button"

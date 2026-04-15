@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
 import { MANUSCRIPT_SYSTEM_PROMPT } from '@/lib/prompts'
-import { IterationMessage, ManuscriptSection, StudyContext, UploadedFile } from '@/types'
+import {
+  IterationMessage,
+  ManuscriptSection,
+  OUTPUT_SECTION_LABELS,
+  StudyContext,
+  UploadedFile,
+} from '@/types'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
@@ -24,23 +30,32 @@ export async function POST(req: NextRequest) {
 
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
+    const currentSectionText = originalSections
+      .map(
+        (section) =>
+          `${OUTPUT_SECTION_LABELS[section.type].toUpperCase()}:\n${section.content}`
+      )
+      .join('\n\n')
+
+    const requestedSectionLabels = context.outputSections
+      .map((section) => OUTPUT_SECTION_LABELS[section])
+      .join(', ')
+
     const systemContext = `
 ${MANUSCRIPT_SYSTEM_PROMPT}
 
 You are now in refinement mode. The user has already generated the following analytical narrative sections:
 
-CURRENT METHODS SECTION:
-${originalSections.find((s) => s.type === 'methods')?.content || ''}
-
-CURRENT RESULTS SECTION:
-${originalSections.find((s) => s.type === 'results')?.content || ''}
+CURRENT SECTIONS:
+${currentSectionText}
 
 ANALYSIS CONTEXT:
 Title: ${context.title}
 Sample / Dataset Description: ${context.population}
 Key Question or Outcome: ${context.primaryOutcome}
 Methods Used: ${context.statisticalMethods}
-Target Output Style: ${context.journalStyle}
+Target Tone: ${context.outputTone}
+Requested Sections: ${requestedSectionLabels}
 
 The user wants to refine these sections. You can:
 - Update specific sections based on their feedback
@@ -52,8 +67,7 @@ Always respond with a JSON object in this exact format:
 {
   "message": "Brief explanation of what you changed",
   "updatedSections": [
-    { "type": "methods", "content": "updated or unchanged methods text" },
-    { "type": "results", "content": "updated or unchanged results text" }
+    { "type": "section_name", "content": "updated or unchanged section text" }
   ]
 }
 `

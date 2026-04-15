@@ -6,14 +6,21 @@ import { useRouter } from 'next/navigation'
 import FileUpload from '@/components/FileUpload'
 import StudyContextForm from '@/components/StudyContextForm'
 import { cn } from '@/lib/utils'
-import { GenerateResponse, StudyContext, UploadedFile } from '@/types'
+import {
+  GenerateResponse,
+  OUTPUT_SECTION_LABELS,
+  StudyContext,
+  TONE_PRESETS,
+  UploadedFile,
+} from '@/types'
 
 const initialStudyContext: StudyContext = {
   title: '',
   population: '',
   primaryOutcome: '',
   statisticalMethods: '',
-  journalStyle: 'APA',
+  outputTone: 'academic',
+  outputSections: [...TONE_PRESETS.academic.defaultSections],
 }
 
 const steps = [
@@ -209,8 +216,8 @@ export default function Home() {
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold text-slate-900">Step 3: Review</h2>
                 <p className="text-sm leading-6 text-slate-600">
-                  Confirm your uploaded files and analysis context before generating the written
-                  narrative.
+                  Confirm your uploaded files, tone, and selected sections before generating the
+                  written narrative.
                 </p>
               </div>
 
@@ -272,8 +279,16 @@ export default function Home() {
                       <dd>{studyContext.statisticalMethods || 'Not provided'}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-slate-900">Output Style</dt>
-                      <dd>{studyContext.journalStyle}</dd>
+                      <dt className="font-medium text-slate-900">Tone</dt>
+                      <dd>{TONE_PRESETS[studyContext.outputTone].label}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-slate-900">Sections</dt>
+                      <dd>
+                        {studyContext.outputSections
+                          .map((section) => OUTPUT_SECTION_LABELS[section])
+                          .join(', ')}
+                      </dd>
                     </div>
                   </dl>
                 </div>

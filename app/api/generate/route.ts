@@ -39,12 +39,15 @@ export async function POST(req: NextRequest) {
     raw = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
 
     const parsed = JSON.parse(raw)
+    const sections = context.outputSections
+      .map((sectionKey) => ({
+        type: sectionKey,
+        content: parsed[sectionKey] || '',
+      }))
+      .filter((section) => section.content)
 
     return NextResponse.json({
-      sections: [
-        { type: 'methods', content: parsed.methods || '' },
-        { type: 'results', content: parsed.results || '' },
-      ],
+      sections,
       conversationId: crypto.randomUUID(),
     })
   } catch (error) {
