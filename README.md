@@ -73,8 +73,8 @@ The demo uses real CSF biomarker data from an FTD (frontotemporal dementia) prot
 Deploy on Vercel:
 
 1. Import this repository into Vercel.
-2. Create a Vercel project secret named `gemini_api_key`.
-3. Set the production environment variable via [vercel.json](/Users/nikita/scribe-ai/vercel.json).
-4. Redeploy after updating the secret.
+2. Open `Settings -> Environment Variables`.
+3. Add `GEMINI_API_KEY` and paste your real Gemini API key.
+4. Redeploy after saving the environment variable.
 
 Live URL: [add after deployment]
