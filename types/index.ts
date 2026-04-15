@@ -11,12 +11,23 @@ export type OutputSection =
 export const OUTPUT_SECTION_LABELS: Record<OutputSection, string> = {
   methods: 'Methods',
   results: 'Results',
-  approach: 'Approach',
+  approach: 'Analytical Approach',
   findings: 'Key Findings',
   executive_summary: 'Executive Summary',
   discussion: 'Discussion',
   recommendations: 'Recommendations',
-  limitations: 'Limitations',
+  limitations: 'Caveats & Limitations',
+}
+
+export const OUTPUT_SECTION_DESCRIPTIONS: Record<OutputSection, string> = {
+  methods: 'How the analysis was conducted',
+  results: 'What the data showed',
+  approach: 'Overview of the analytical process',
+  findings: 'The most important takeaways',
+  executive_summary: 'High-level summary for decision makers',
+  discussion: 'Interpretation and implications of findings',
+  recommendations: 'Suggested actions based on the analysis',
+  limitations: 'Caveats, assumptions, and boundaries of the analysis',
 }
 
 export const TONE_PRESETS = {

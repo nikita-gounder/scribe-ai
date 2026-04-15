@@ -1,28 +1,70 @@
 'use client'
 
-import { OUTPUT_SECTION_LABELS, OutputSection, StudyContext, TONE_PRESETS } from '@/types'
+import {
+  OUTPUT_SECTION_DESCRIPTIONS,
+  OUTPUT_SECTION_LABELS,
+  OutputSection,
+  StudyContext,
+  TONE_PRESETS,
+} from '@/types'
 
 interface StudyContextFormProps {
   context: StudyContext
   onChange: (context: StudyContext) => void
 }
 
+function AcademicIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="m3 9 9-5 9 5-9 5-9-5Z" />
+      <path d="M7 11.5V15c0 1.8 2.2 3.5 5 3.5s5-1.7 5-3.5v-3.5" />
+    </svg>
+  )
+}
+
+function BusinessIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M4 19.5h16" />
+      <path d="M7 16V10" />
+      <path d="M12 16V6" />
+      <path d="M17 16v-3" />
+    </svg>
+  )
+}
+
+function TechnicalIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 3.5v4" />
+      <path d="M12 16.5v4" />
+      <path d="m4.9 7.9 2.8 2.8" />
+      <path d="m16.3 13.3 2.8 2.8" />
+      <path d="M3.5 12h4" />
+      <path d="M16.5 12h4" />
+      <path d="m4.9 16.1 2.8-2.8" />
+      <path d="m16.3 10.7 2.8-2.8" />
+      <circle cx="12" cy="12" r="3.5" />
+    </svg>
+  )
+}
+
 const toneCards = [
   {
     tone: 'academic' as const,
-    icon: '🎓',
+    icon: <AcademicIcon />,
     label: 'Academic',
     description: 'Formal prose, APA/AMA statistical reporting',
   },
   {
     tone: 'business' as const,
-    icon: '📊',
+    icon: <BusinessIcon />,
     label: 'Business',
     description: 'Clear, direct prose for stakeholder audiences',
   },
   {
     tone: 'technical' as const,
-    icon: '⚙️',
+    icon: <TechnicalIcon />,
     label: 'Technical',
     description: 'Precise, methods-forward for data science teams',
   },
@@ -137,7 +179,7 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                <div className="text-2xl">{toneCard.icon}</div>
+                <div className="text-slate-700">{toneCard.icon}</div>
                 <div className="mt-4">
                   <p className="text-lg font-semibold text-slate-900">{toneCard.label}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{toneCard.description}</p>
@@ -157,7 +199,7 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {sectionOptions.map((section) => {
             const isSelected = context.outputSections.includes(section)
 
@@ -166,13 +208,21 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
                 key={section}
                 type="button"
                 onClick={() => toggleSection(section)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                className={`rounded-2xl border px-4 py-3 text-left transition ${
                   isSelected
                     ? 'border-slate-900 bg-slate-900 text-white'
                     : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50'
                 }`}
+                title={OUTPUT_SECTION_DESCRIPTIONS[section]}
               >
-                {OUTPUT_SECTION_LABELS[section]}
+                <span className="block text-sm font-semibold">{OUTPUT_SECTION_LABELS[section]}</span>
+                <span
+                  className={`mt-1 block text-xs leading-5 ${
+                    isSelected ? 'text-slate-200' : 'text-slate-500'
+                  }`}
+                >
+                  {OUTPUT_SECTION_DESCRIPTIONS[section]}
+                </span>
               </button>
             )
           })}
