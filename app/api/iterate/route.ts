@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const systemContext = `
 ${MANUSCRIPT_SYSTEM_PROMPT}
 
-You are now in refinement mode. The user has already generated the following manuscript sections:
+You are now in refinement mode. The user has already generated the following analytical narrative sections:
 
 CURRENT METHODS SECTION:
 ${originalSections.find((s) => s.type === 'methods')?.content || ''}
@@ -35,12 +35,12 @@ ${originalSections.find((s) => s.type === 'methods')?.content || ''}
 CURRENT RESULTS SECTION:
 ${originalSections.find((s) => s.type === 'results')?.content || ''}
 
-STUDY CONTEXT:
+ANALYSIS CONTEXT:
 Title: ${context.title}
-Population: ${context.population}
-Primary Outcome: ${context.primaryOutcome}
-Statistical Methods Used: ${context.statisticalMethods}
-Target Journal Style: ${context.journalStyle}
+Sample / Dataset Description: ${context.population}
+Key Question or Outcome: ${context.primaryOutcome}
+Methods Used: ${context.statisticalMethods}
+Target Output Style: ${context.journalStyle}
 
 The user wants to refine these sections. You can:
 - Update specific sections based on their feedback

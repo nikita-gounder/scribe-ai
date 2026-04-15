@@ -83,7 +83,7 @@ export default function IterationPanel({
   const hasMessages = messages.length > 0
   const placeholderExamples = useMemo(
     () =>
-      "Ask me to refine your manuscript. Examples: 'Make the methods more concise', 'Add interpretation to the results', 'Rewrite for a general audience', 'Add the p-value for NPTX2'",
+      "Ask me to refine your draft. Examples: 'Make the methods more concise', 'Rewrite this for an executive audience', 'Add context from the uploaded dashboard', 'Make the findings more technical'",
     []
   )
 

@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from 'docx'
 
-import { ManuscriptSection } from '@/types'
+import { ManuscriptSection, StudyContext } from '@/types'
 
 interface ManuscriptOutputProps {
   sections: ManuscriptSection[]
   isLoading: boolean
   title: string
+  outputStyle: StudyContext['journalStyle']
 }
 
 function ClipboardIcon() {
@@ -21,7 +22,16 @@ function ClipboardIcon() {
   )
 }
 
-async function downloadDocx(sections: ManuscriptSection[], title: string) {
+async function downloadDocx(
+  sections: ManuscriptSection[],
+  title: string,
+  outputStyle: StudyContext['journalStyle']
+) {
+  const methodsHeading =
+    outputStyle === 'Business' || outputStyle === 'Technical' ? 'Analytical Methods' : 'Methods'
+  const resultsHeading =
+    outputStyle === 'Business' || outputStyle === 'Technical' ? 'Key Findings' : 'Results'
+
   const doc = new Document({
     sections: [
       {
@@ -32,14 +42,14 @@ async function downloadDocx(sections: ManuscriptSection[], title: string) {
             heading: HeadingLevel.TITLE,
           }),
           new Paragraph({
-            text: 'Methods',
+            text: methodsHeading,
             heading: HeadingLevel.HEADING_1,
           }),
           new Paragraph({
             children: [new TextRun(sections.find((s) => s.type === 'methods')?.content || '')],
           }),
           new Paragraph({
-            text: 'Results',
+            text: resultsHeading,
             heading: HeadingLevel.HEADING_1,
           }),
           new Paragraph({
@@ -59,9 +69,15 @@ async function downloadDocx(sections: ManuscriptSection[], title: string) {
   URL.revokeObjectURL(url)
 }
 
-export default function ManuscriptOutput({ sections, isLoading, title }: ManuscriptOutputProps) {
+export default function ManuscriptOutput({
+  sections,
+  isLoading,
+  title,
+  outputStyle,
+}: ManuscriptOutputProps) {
   const [copiedSection, setCopiedSection] = useState<ManuscriptSection['type'] | null>(null)
   const animateKey = sections.map((section) => `${section.type}:${section.content.length}`).join('|')
+  const useAnalyticalHeaders = outputStyle === 'Business' || outputStyle === 'Technical'
 
   async function handleCopy(section: ManuscriptSection) {
     await navigator.clipboard.writeText(section.content)
@@ -74,16 +90,16 @@ export default function ManuscriptOutput({ sections, isLoading, title }: Manuscr
       <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Manuscript Output
+            Written Output
           </p>
           <h2 className="mt-2 font-serif text-3xl font-semibold text-slate-900">
-            Draft Manuscript
+            Draft Narrative
           </h2>
         </div>
 
         <button
           type="button"
-          onClick={() => void downloadDocx(sections, title || 'Scribe Manuscript')}
+          onClick={() => void downloadDocx(sections, title || 'Scribe Narrative', outputStyle)}
           disabled={isLoading || sections.length === 0}
           className="rounded-full border border-slate-200 bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
         >
@@ -113,7 +129,13 @@ export default function ManuscriptOutput({ sections, isLoading, title }: Manuscr
               <section key={section.type}>
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="font-serif text-2xl font-semibold text-slate-900">
-                    {section.type === 'methods' ? 'Methods' : 'Results'}
+                    {section.type === 'methods'
+                      ? useAnalyticalHeaders
+                        ? 'Analytical Methods'
+                        : 'Methods'
+                      : useAnalyticalHeaders
+                        ? 'Key Findings'
+                        : 'Results'}
                   </h3>
                   <button
                     type="button"
@@ -133,7 +155,9 @@ export default function ManuscriptOutput({ sections, isLoading, title }: Manuscr
             ))}
           </div>
         ) : (
-          <p className="text-sm text-slate-600">Generated manuscript sections will appear here.</p>
+          <p className="text-sm text-slate-600">
+            Generated analytical narrative sections will appear here.
+          </p>
         )}
       </div>
     </div>

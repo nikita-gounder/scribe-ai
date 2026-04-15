@@ -15,39 +15,39 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
       <div className="grid gap-5 md:grid-cols-2">
         <label className="space-y-2 text-sm text-slate-700">
           <span className="font-medium text-slate-900">
-            Study Title <span className="text-rose-500">*</span>
+            Analysis Title <span className="text-rose-500">*</span>
           </span>
           <input
             required
             value={context.title}
             onChange={(event) => onChange({ ...context, title: event.target.value })}
-            placeholder="e.g. CSF Biomarkers and Clinical Outcomes"
+            placeholder="e.g. Churn Drivers in Q3 Enterprise Accounts"
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
           />
         </label>
 
         <label className="space-y-2 text-sm text-slate-700">
-          <span className="font-medium text-slate-900">Population</span>
+          <span className="font-medium text-slate-900">Sample / Dataset Description</span>
           <input
             value={context.population}
             onChange={(event) => onChange({ ...context, population: event.target.value })}
-            placeholder="e.g. Adults aged 18-65 with frontotemporal dementia"
+            placeholder="e.g. Q3 customer cohort, clinical trial participants, loan applicants aged 25-60"
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
           />
         </label>
 
         <label className="space-y-2 text-sm text-slate-700">
-          <span className="font-medium text-slate-900">Primary Outcome</span>
+          <span className="font-medium text-slate-900">Key Question or Outcome</span>
           <input
             value={context.primaryOutcome}
             onChange={(event) => onChange({ ...context, primaryOutcome: event.target.value })}
-            placeholder="e.g. CSF biomarker levels at baseline vs. symptomatic stage"
+            placeholder="e.g. Predict 30-day churn, classify high-risk patients, identify revenue drivers"
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
           />
         </label>
 
         <label className="space-y-2 text-sm text-slate-700">
-          <span className="font-medium text-slate-900">Journal Style</span>
+          <span className="font-medium text-slate-900">Output Style</span>
           <select
             value={context.journalStyle}
             onChange={(event) =>
@@ -58,19 +58,21 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
             }
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
           >
-            <option value="APA">APA</option>
-            <option value="AMA">AMA</option>
-            <option value="Nature">Nature</option>
+            <option value="APA">APA (Academic)</option>
+            <option value="AMA">AMA (Medical)</option>
+            <option value="Nature">Nature (Scientific)</option>
+            <option value="Business">Business</option>
+            <option value="Technical">Technical</option>
           </select>
         </label>
       </div>
 
       <label className="block space-y-2 text-sm text-slate-700">
-        <span className="font-medium text-slate-900">Statistical Methods Used</span>
+        <span className="font-medium text-slate-900">Methods Used</span>
         <textarea
           value={context.statisticalMethods}
           onChange={(event) => onChange({ ...context, statisticalMethods: event.target.value })}
-          placeholder="e.g. Linear regression, ROC curve analysis, mixed-effects models in R 4.3.1"
+          placeholder="e.g. Logistic regression, A/B test, ROC analysis, time series forecasting, linear mixed model"
           className="min-h-32 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
         />
       </label>

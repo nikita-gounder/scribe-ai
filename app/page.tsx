@@ -70,7 +70,7 @@ export default function Home() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to generate manuscript sections.')
+        throw new Error('Failed to generate written narrative.')
       }
 
       const result: GenerateResponse = await response.json()
@@ -94,7 +94,11 @@ export default function Home() {
               Scribe
             </h1>
             <p className="text-base text-slate-600">
-              Turn your analysis into manuscript sections instantly
+              Turn your data outputs into polished written narrative — instantly
+            </p>
+            <p className="max-w-3xl text-base leading-7 text-slate-600">
+              For researchers, analysts, consultants, and data scientists who have the numbers but
+              need the words
             </p>
           </div>
 
@@ -148,8 +152,8 @@ export default function Home() {
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold text-slate-900">Step 1: Upload inputs</h2>
                 <p className="text-sm leading-6 text-slate-600">
-                  Add CSV tables, image files, or pasted statistical output to start building the
-                  study package that Scribe will use for drafting.
+                  Add CSV tables, image files, or pasted analytical output to start building the
+                  context package that Scribe will use for drafting.
                 </p>
               </div>
 
@@ -173,8 +177,8 @@ export default function Home() {
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold text-slate-900">Step 2: Add study context</h2>
                 <p className="text-sm leading-6 text-slate-600">
-                  Provide the core study details so Scribe can frame the manuscript text in the
-                  correct academic style.
+                  Provide the core context so Scribe can frame the written narrative for the right
+                  audience and use case.
                 </p>
               </div>
 
@@ -205,8 +209,8 @@ export default function Home() {
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold text-slate-900">Step 3: Review</h2>
                 <p className="text-sm leading-6 text-slate-600">
-                  Confirm your uploaded files and study metadata before generating manuscript
-                  sections.
+                  Confirm your uploaded files and analysis context before generating the written
+                  narrative.
                 </p>
               </div>
 
@@ -248,7 +252,7 @@ export default function Home() {
 
                 <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6">
                   <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                    Study Context
+                    Analysis Context
                   </h3>
                   <dl className="mt-4 space-y-4 rounded-2xl border border-slate-100 bg-white p-5 text-sm text-slate-600">
                     <div>
@@ -256,19 +260,19 @@ export default function Home() {
                       <dd>{studyContext.title || 'Not provided'}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-slate-900">Population</dt>
+                      <dt className="font-medium text-slate-900">Sample / Dataset Description</dt>
                       <dd>{studyContext.population || 'Not provided'}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-slate-900">Primary Outcome</dt>
+                      <dt className="font-medium text-slate-900">Key Question or Outcome</dt>
                       <dd>{studyContext.primaryOutcome || 'Not provided'}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-slate-900">Statistical Methods</dt>
+                      <dt className="font-medium text-slate-900">Methods Used</dt>
                       <dd>{studyContext.statisticalMethods || 'Not provided'}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-slate-900">Journal Style</dt>
+                      <dt className="font-medium text-slate-900">Output Style</dt>
                       <dd>{studyContext.journalStyle}</dd>
                     </div>
                   </dl>
@@ -286,7 +290,7 @@ export default function Home() {
                   {isGenerating && (
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                   )}
-                  {isGenerating ? 'Generating...' : 'Generate Manuscript Sections'}
+                  {isGenerating ? 'Generating...' : 'Generate Written Narrative'}
                 </button>
                 <button
                   type="button"
@@ -306,10 +310,10 @@ export default function Home() {
               Upload
             </p>
             <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
-              CSV tables, PNG figures, R output text
+              CSV tables, Excel exports, figures, charts, or pasted model output
             </h3>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Bring together model summaries, regression tables, and analysis figures in one clean
+              Bring together structured outputs, charts, and copied summaries in one clean
               workspace.
             </p>
           </article>
@@ -319,11 +323,11 @@ export default function Home() {
               Generate
             </p>
             <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
-              Methods + Results in seconds
+              Methods & Results, findings summaries, or analytical narratives
             </h3>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Turn raw outputs into publication-ready sections with consistent academic style and
-              structured reporting.
+              Turn raw outputs into polished written deliverables with the right level of detail
+              and structure.
             </p>
           </article>
 
@@ -332,10 +336,10 @@ export default function Home() {
               Refine
             </p>
             <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
-              Chat to iterate and perfect
+              Chat to iterate — add context, change tone, or incorporate new data
             </h3>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Keep polishing tone, specificity, and clarity with natural-language revision
+              Keep polishing clarity, audience fit, and emphasis with natural-language revision
               requests.
             </p>
           </article>

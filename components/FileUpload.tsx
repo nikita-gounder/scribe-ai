@@ -196,18 +196,18 @@ export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
         )}
       >
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Step 1</p>
-        <p className="mt-3 text-xl font-semibold text-slate-950">Drop analysis files here</p>
+        <p className="mt-3 text-xl font-semibold text-slate-950">Upload your analysis outputs</p>
         <p className="mt-2 text-sm leading-6 text-slate-600">
           Drag CSV, image, or text outputs into the workspace, or click to browse.
         </p>
         <p className="mt-4 text-xs uppercase tracking-[0.18em] text-slate-500">
-          Accepted: {ACCEPTED_EXTENSIONS.join(' · ')} | Max {MAX_FILES} files
+          Supports CSV, Excel exports (.txt), figures (PNG, JPG), and pasted model summaries
         </p>
       </button>
 
       <p className="text-sm leading-6 text-slate-600">
-        Works with R model summaries, regression tables, ROC curves, forest plots, and any
-        analysis figure.
+        Works with regression outputs, A/B test results, financial models, ROC curves,
+        dashboards, or any analysis output.
       </p>
 
       {error && (

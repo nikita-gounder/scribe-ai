@@ -76,7 +76,7 @@ export default function ResultsPage() {
               Scribe
             </Link>
             <p className="text-sm text-slate-600">
-              Turn your analysis into manuscript sections instantly
+              Turn your data outputs into polished written narrative — instantly
             </p>
           </div>
 
@@ -92,11 +92,10 @@ export default function ResultsPage() {
         {!isLoading && sections.length === 0 ? (
           <div className="rounded-[2rem] border border-slate-100 bg-white px-8 py-10 shadow-sm">
             <h2 className="font-serif text-3xl font-semibold text-slate-900">
-              No manuscript draft found
+              No written draft found
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-              Generate a manuscript draft from the home page first, then return here to review and
-              refine it.
+              Generate a draft from the home page first, then return here to review and refine it.
             </p>
             <Link
               href="/"
@@ -110,7 +109,7 @@ export default function ResultsPage() {
             <div className="space-y-6">
               <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  Study Context
+                  Analysis Context
                 </p>
                 <dl className="mt-4 grid gap-4 text-sm text-slate-600 sm:grid-cols-2">
                   <div>
@@ -118,19 +117,19 @@ export default function ResultsPage() {
                     <dd>{context.title || 'Not provided'}</dd>
                   </div>
                   <div>
-                    <dt className="font-medium text-slate-900">Journal Style</dt>
+                    <dt className="font-medium text-slate-900">Output Style</dt>
                     <dd>{context.journalStyle}</dd>
                   </div>
                   <div>
-                    <dt className="font-medium text-slate-900">Population</dt>
+                    <dt className="font-medium text-slate-900">Sample / Dataset Description</dt>
                     <dd>{context.population || 'Not provided'}</dd>
                   </div>
                   <div>
-                    <dt className="font-medium text-slate-900">Primary Outcome</dt>
+                    <dt className="font-medium text-slate-900">Key Question or Outcome</dt>
                     <dd>{context.primaryOutcome || 'Not provided'}</dd>
                   </div>
                   <div className="sm:col-span-2">
-                    <dt className="font-medium text-slate-900">Statistical Methods Used</dt>
+                    <dt className="font-medium text-slate-900">Methods Used</dt>
                     <dd>{context.statisticalMethods || 'Not provided'}</dd>
                   </div>
                 </dl>
@@ -140,6 +139,7 @@ export default function ResultsPage() {
                 sections={sections}
                 isLoading={isLoading}
                 title={context.title || 'Scribe Manuscript'}
+                outputStyle={context.journalStyle}
               />
             </div>
 

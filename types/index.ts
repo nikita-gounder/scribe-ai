@@ -11,7 +11,7 @@ export interface StudyContext {
   population: string
   primaryOutcome: string
   statisticalMethods: string
-  journalStyle: 'APA' | 'AMA' | 'Nature'
+  journalStyle: 'APA' | 'AMA' | 'Nature' | 'Business' | 'Technical'
 }
 
 export interface ManuscriptSection {
