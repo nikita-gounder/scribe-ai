@@ -19,9 +19,15 @@ export interface ManuscriptSection {
   content: string
 }
 
+export interface MessageAttachment {
+  name: string
+  type: UploadedFile['type']
+}
+
 export interface IterationMessage {
   role: 'user' | 'assistant'
   content: string
+  attachments?: MessageAttachment[]
   updatedSections?: ManuscriptSection[]
 }
 

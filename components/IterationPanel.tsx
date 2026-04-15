@@ -4,7 +4,13 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { parseCSV, parseImage, parseText } from '@/lib/parsers'
 import { cn } from '@/lib/utils'
-import { IterationMessage, ManuscriptSection, StudyContext, UploadedFile } from '@/types'
+import {
+  IterationMessage,
+  ManuscriptSection,
+  MessageAttachment,
+  StudyContext,
+  UploadedFile,
+} from '@/types'
 
 interface IterationPanelProps {
   context: StudyContext
@@ -127,6 +133,11 @@ export default function IterationPanel({
     setDraft('')
     onLoadingChange(true)
 
+    const attachments: MessageAttachment[] = additionalFiles.map((file) => ({
+      name: file.name,
+      type: file.type,
+    }))
+
     try {
       const response = await fetch('/api/iterate', {
         method: 'POST',
@@ -153,11 +164,10 @@ export default function IterationPanel({
 
       const nextMessages: IterationMessage[] = [
         ...messages,
-        { role: 'user', content: newMessage },
+        { role: 'user', content: newMessage, attachments },
         {
           role: 'assistant',
           content: data.message || 'Sections updated.',
-          updatedSections: data.updatedSections,
         },
       ]
 
@@ -173,7 +183,7 @@ export default function IterationPanel({
       setError('Iteration failed — please try again')
       onMessagesChange([
         ...messages,
-        { role: 'user', content: newMessage },
+        { role: 'user', content: newMessage, attachments },
         { role: 'assistant', content: 'Iteration failed — please try again' },
       ])
     } finally {
@@ -182,7 +192,7 @@ export default function IterationPanel({
   }
 
   return (
-    <div className="flex h-full min-h-[44rem] flex-col rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-sm sm:p-5">
+    <div className="flex h-[400px] flex-col rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-sm sm:p-5 lg:h-[500px]">
       <div className="border-b border-slate-200 px-2 pb-4">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
           Iteration Panel
@@ -210,20 +220,21 @@ export default function IterationPanel({
                 >
                   <p className="whitespace-pre-wrap text-sm leading-7">{message.content}</p>
 
-                  {message.updatedSections && message.updatedSections.length > 0 && (
-                    <div className="mt-4 space-y-3 border-t border-slate-200/80 pt-4">
-                      {message.updatedSections.map((section) => (
-                        <div
-                          key={section.type}
-                          className="rounded-2xl bg-slate-50 px-4 py-3 text-slate-800"
+                  {message.attachments && message.attachments.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {message.attachments.map((attachment) => (
+                        <span
+                          key={`${attachment.name}-${attachment.type}`}
+                          className={cn(
+                            'inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium',
+                            isUser
+                              ? 'bg-white/15 text-white'
+                              : 'border border-slate-200 bg-slate-50 text-slate-600'
+                          )}
                         >
-                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                            {section.type}
-                          </p>
-                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6">
-                            {section.content}
-                          </p>
-                        </div>
+                          <PaperclipIcon />
+                          {attachment.name}
+                        </span>
                       ))}
                     </div>
                   )}

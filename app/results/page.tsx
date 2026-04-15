@@ -106,7 +106,7 @@ export default function ResultsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="grid items-start gap-6 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="space-y-6">
               <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">

@@ -59,7 +59,14 @@ Always respond with a JSON object in this exact format:
 `
 
     const conversationHistory = messages
-      .map((message) => `${message.role === 'user' ? 'User' : 'Assistant'}: ${message.content}`)
+      .map((message) => {
+        const attachmentSummary =
+          message.attachments && message.attachments.length > 0
+            ? `\nAttachments: ${message.attachments.map((file) => file.name).join(', ')}`
+            : ''
+
+        return `${message.role === 'user' ? 'User' : 'Assistant'}: ${message.content}${attachmentSummary}`
+      })
       .join('\n')
 
     const contentParts: Array<
