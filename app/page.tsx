@@ -320,42 +320,33 @@ export default function Home() {
         </section>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <article className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Upload
-            </p>
-            <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
-              CSV tables, Excel exports, figures, charts, or pasted model output
-            </h3>
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Bring together structured outputs, charts, and copied summaries in one clean
-              workspace.
+          <article className="rounded-[2rem] border border-slate-200 bg-white p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-lg text-slate-700">
+              ^
+            </div>
+            <h3 className="mt-4 text-xl font-semibold text-slate-900">Upload</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Drop in CSV tables, figures, Excel exports, or pasted model output
             </p>
           </article>
 
-          <article className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-              📝 Generate
-            </p>
-            <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
-              Generate
-            </h3>
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Choose your tone and sections — Executive Summary, Key Findings, Methods,
-              Recommendations, and more
+          <article className="rounded-[2rem] border border-slate-200 bg-white p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-lg text-slate-700">
+              []
+            </div>
+            <h3 className="mt-4 text-xl font-semibold text-slate-900">Generate</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Choose your tone and sections — from Executive Summary to Methods to Recommendations
             </p>
           </article>
 
-          <article className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Refine
-            </p>
-            <h3 className="mt-3 font-serif text-2xl font-semibold text-slate-900">
-              Chat to iterate — add context, change tone, or incorporate new data
-            </h3>
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Keep polishing clarity, audience fit, and emphasis with natural-language revision
-              requests.
+          <article className="rounded-[2rem] border border-slate-200 bg-white p-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-lg text-slate-700">
+              ...
+            </div>
+            <h3 className="mt-4 text-xl font-semibold text-slate-900">Refine</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Chat to iterate — add context, adjust tone, or incorporate new data
             </p>
           </article>
         </section>
