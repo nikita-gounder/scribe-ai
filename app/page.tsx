@@ -29,6 +29,37 @@ const steps = [
   { id: 3, label: 'Review' },
 ] as const
 
+function UploadCardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 16V5" />
+      <path d="m7.5 9.5 4.5-4.5 4.5 4.5" />
+      <path d="M5 18.5h14" />
+    </svg>
+  )
+}
+
+function GenerateCardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M8 4.5h6l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 7 19V6A1.5 1.5 0 0 1 8.5 4.5Z" />
+      <path d="M14 4.5V9h4" />
+      <path d="M10 12.5h4" />
+      <path d="M10 16h4" />
+    </svg>
+  )
+}
+
+function RefineCardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M6.5 7h11A2.5 2.5 0 0 1 20 9.5v5A2.5 2.5 0 0 1 17.5 17H10l-4 3v-3H6.5A2.5 2.5 0 0 1 4 14.5v-5A2.5 2.5 0 0 1 6.5 7Z" />
+      <path d="M8.5 11.5h7" />
+      <path d="M8.5 14h4.5" />
+    </svg>
+  )
+}
+
 function badgeClass(type: UploadedFile['type']) {
   if (type === 'csv') return 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
   if (type === 'image') return 'bg-blue-50 text-blue-700 ring-1 ring-blue-200'
@@ -322,7 +353,7 @@ export default function Home() {
         <section className="grid gap-4 md:grid-cols-3">
           <article className="rounded-[2rem] border border-slate-200 bg-white p-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-lg text-slate-700">
-              ^
+              <UploadCardIcon />
             </div>
             <h3 className="mt-4 text-xl font-semibold text-slate-900">Upload</h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -332,7 +363,7 @@ export default function Home() {
 
           <article className="rounded-[2rem] border border-slate-200 bg-white p-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-lg text-slate-700">
-              []
+              <GenerateCardIcon />
             </div>
             <h3 className="mt-4 text-xl font-semibold text-slate-900">Generate</h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -342,7 +373,7 @@ export default function Home() {
 
           <article className="rounded-[2rem] border border-slate-200 bg-white p-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-lg text-slate-700">
-              ...
+              <RefineCardIcon />
             </div>
             <h3 className="mt-4 text-xl font-semibold text-slate-900">Refine</h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">
