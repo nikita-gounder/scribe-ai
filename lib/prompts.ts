@@ -17,6 +17,7 @@ Rules:
 
 export const buildUserPrompt = (files: UploadedFile[], context: StudyContext): string => {
   const sectionInstructions = context.outputSections.map((section) => OUTPUT_SECTION_LABELS[section]).join(', ')
+  const exactSectionKeys = context.outputSections.join(', ')
 
   const toneInstructions = {
     academic:
@@ -47,6 +48,7 @@ Return a JSON object where each key is the section name (snake_case) and value i
   "results": "...",
   "executive_summary": "..."
 }
-Only include keys for the sections requested: ${context.outputSections.join(', ')}
+Use these exact JSON keys and no others: ${exactSectionKeys}
+Do not rename keys to variants like key_findings, analytical_approach, or caveats.
 `
 }

@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import FileUpload from '@/components/FileUpload'
 import StudyContextForm from '@/components/StudyContextForm'
+import { DEMO_PRESETS, DemoPreset } from '@/lib/demos'
 import { cn } from '@/lib/utils'
 import {
   GenerateResponse,
@@ -60,6 +61,53 @@ function RefineCardIcon() {
   )
 }
 
+function FlaskConicalIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9">
+      <path d="M10 3.5h4" />
+      <path d="M12 3.5v6l5.4 8.3A1.5 1.5 0 0 1 16.1 20H7.9a1.5 1.5 0 0 1-1.3-2.2L12 9.5" />
+      <path d="M8.5 14h7" />
+    </svg>
+  )
+}
+
+function BarChart2Icon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9">
+      <path d="M4 19.5h16" />
+      <path d="M7 16V10" />
+      <path d="M12 16V6.5" />
+      <path d="M17 16v-4" />
+      <path d="m5.5 8.5 4-3 3 2 5-3" />
+    </svg>
+  )
+}
+
+function CpuIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9">
+      <rect x="7.5" y="7.5" width="9" height="9" rx="1.5" />
+      <path d="M12 3.5v3" />
+      <path d="M12 17.5v3" />
+      <path d="M3.5 12h3" />
+      <path d="M17.5 12h3" />
+      <path d="M6 6v0" />
+      <path d="M18 6v0" />
+      <path d="M6 18v0" />
+      <path d="M18 18v0" />
+    </svg>
+  )
+}
+
+function XIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M6 6l12 12" />
+      <path d="M18 6 6 18" />
+    </svg>
+  )
+}
+
 function badgeClass(type: UploadedFile['type']) {
   if (type === 'csv') return 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
   if (type === 'image') return 'bg-blue-50 text-blue-700 ring-1 ring-blue-200'
@@ -68,11 +116,25 @@ function badgeClass(type: UploadedFile['type']) {
 
 export default function Home() {
   const router = useRouter()
+  const formSectionRef = useRef<HTMLElement>(null)
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1)
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
   const [studyContext, setStudyContext] = useState<StudyContext>(initialStudyContext)
   const [isGenerating, setIsGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
+  const [showDemoBanner, setShowDemoBanner] = useState(false)
+
+  function loadDemoPreset(preset: DemoPreset) {
+    setUploadedFiles(preset.files.map((file) => ({ ...file })))
+    setStudyContext({ ...preset.context, outputSections: [...preset.context.outputSections] })
+    setCurrentStep(3)
+    setGenerateError(null)
+    setShowDemoBanner(true)
+
+    window.requestAnimationFrame(() => {
+      formSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
 
   const canContinueFromUpload = uploadedFiles.length > 0
   const hasRequiredContext = Boolean(
@@ -184,7 +246,47 @@ export default function Home() {
           </div>
         )}
 
-        <section className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 sm:p-8">
+        <section className="space-y-5 rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 sm:p-8">
+          <div className="space-y-4">
+            <h2 className="text-lg font-medium text-slate-900">See it in action</h2>
+            <div className="grid gap-4 md:grid-cols-3">
+              {DEMO_PRESETS.map((preset) => {
+                const Icon =
+                  preset.id === 'academic'
+                    ? FlaskConicalIcon
+                    : preset.id === 'business'
+                      ? BarChart2Icon
+                      : CpuIcon
+
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => loadDemoPreset(preset)}
+                    className="rounded-2xl border border-slate-200 bg-slate-100 p-5 text-left transition hover:border-slate-900 hover:bg-white"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-lg font-semibold text-slate-900">{preset.label}</p>
+                        <p className="mt-2 text-sm leading-6 text-slate-600">
+                          {preset.description}
+                        </p>
+                      </div>
+                      <span className="rounded-full border border-slate-200 bg-white p-2 text-slate-700">
+                        <Icon />
+                      </span>
+                    </div>
+                    <p className="mt-5 text-sm font-medium text-slate-900">Try this demo →</p>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <section
+            ref={formSectionRef}
+            className="rounded-[2rem] border border-slate-100 bg-white transition-all duration-300"
+          >
           {currentStep === 1 && (
             <div className="animate-fade-in space-y-6">
               <div className="space-y-2">
@@ -244,6 +346,20 @@ export default function Home() {
 
           {currentStep === 3 && (
             <div className="animate-fade-in space-y-6">
+              {showDemoBanner && (
+                <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-700">
+                  <p>Using demo data — click Generate to see Scribe in action</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowDemoBanner(false)}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:text-slate-900"
+                    aria-label="Dismiss demo data banner"
+                  >
+                    <XIcon />
+                  </button>
+                </div>
+              )}
+
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold text-slate-900">Step 3: Review</h2>
                 <p className="text-sm leading-6 text-slate-600">
@@ -348,6 +464,7 @@ export default function Home() {
               </div>
             </div>
           )}
+          </section>
         </section>
 
         <section className="grid gap-4 md:grid-cols-3">

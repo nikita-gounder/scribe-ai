@@ -2,9 +2,41 @@ import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
 import { MANUSCRIPT_SYSTEM_PROMPT, buildUserPrompt } from '@/lib/prompts'
-import { GenerateRequest } from '@/types'
+import { GenerateRequest, OutputSection } from '@/types'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+
+const SECTION_KEY_ALIASES: Record<OutputSection, string[]> = {
+  methods: ['methods', 'method', 'methodology'],
+  results: ['results', 'result'],
+  approach: ['approach', 'analytical_approach', 'analysis_approach'],
+  findings: ['findings', 'finding', 'key_findings'],
+  executive_summary: ['executive_summary', 'summary'],
+  discussion: ['discussion', 'interpretation'],
+  recommendations: ['recommendations', 'recommendation', 'next_steps', 'actions'],
+  limitations: ['limitations', 'limitation', 'caveats', 'caveats_and_limitations'],
+}
+
+function normalizeKey(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+}
+
+function resolveSectionContent(parsed: Record<string, unknown>, section: OutputSection) {
+  const entries = Object.entries(parsed).map(([key, value]) => [normalizeKey(key), value] as const)
+
+  for (const alias of SECTION_KEY_ALIASES[section]) {
+    const match = entries.find(([key]) => key === alias)
+    if (typeof match?.[1] === 'string' && match[1].trim()) {
+      return match[1].trim()
+    }
+  }
+
+  return ''
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,11 +70,11 @@ export async function POST(req: NextRequest) {
 
     raw = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
 
-    const parsed = JSON.parse(raw)
+    const parsed = JSON.parse(raw) as Record<string, unknown>
     const sections = context.outputSections
       .map((sectionKey) => ({
         type: sectionKey,
-        content: parsed[sectionKey] || '',
+        content: resolveSectionContent(parsed, sectionKey),
       }))
       .filter((section) => section.content)
 
