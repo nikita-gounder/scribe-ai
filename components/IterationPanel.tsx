@@ -35,10 +35,10 @@ function PaperclipIcon() {
 
 function TypingDots() {
   return (
-    <div className="inline-flex items-center gap-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-500 shadow-sm">
-      <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.2s]" />
-      <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.1s]" />
-      <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
+    <div className="inline-flex items-center gap-1 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-muted)] shadow-sm">
+      <span className="h-2 w-2 animate-bounce rounded-full bg-[var(--accent)] [animation-delay:-0.2s]" />
+      <span className="h-2 w-2 animate-bounce rounded-full bg-[var(--accent)] [animation-delay:-0.1s]" />
+      <span className="h-2 w-2 animate-bounce rounded-full bg-[var(--accent)]" />
     </div>
   )
 }
@@ -192,12 +192,12 @@ export default function IterationPanel({
   }
 
   return (
-    <div className="flex h-[400px] flex-col rounded-[2rem] border border-slate-200 bg-slate-50 p-4 shadow-sm sm:p-5 lg:h-[500px]">
-      <div className="border-b border-slate-200 px-2 pb-4">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+    <div className="flex h-[400px] flex-col rounded-[2rem] border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-4 shadow-sm sm:p-5 lg:h-[500px]">
+      <div className="border-b border-[var(--border-subtle)] px-2 pb-4">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
           Iteration Panel
         </p>
-        <h2 className="mt-2 text-2xl font-semibold text-slate-950">Refine the Draft</h2>
+        <h2 className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">Refine the Draft</h2>
       </div>
 
       <div ref={scrollRef} className="mt-4 flex-1 space-y-4 overflow-y-auto px-1 pb-4">
@@ -214,8 +214,8 @@ export default function IterationPanel({
                   className={cn(
                     'max-w-[90%] rounded-3xl px-4 py-3 shadow-sm',
                     isUser
-                      ? 'bg-slate-900 text-white'
-                      : 'border border-slate-200 bg-white text-slate-800'
+                      ? 'bg-[var(--accent)] text-white'
+                      : 'border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-primary)]'
                   )}
                 >
                   <p className="whitespace-pre-wrap text-sm leading-7">{message.content}</p>
@@ -229,7 +229,7 @@ export default function IterationPanel({
                             'inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium',
                             isUser
                               ? 'bg-white/15 text-white'
-                              : 'border border-slate-200 bg-slate-50 text-slate-600'
+                              : 'border border-[var(--border-subtle)] bg-[var(--bg-primary)] text-[var(--text-secondary)]'
                           )}
                         >
                           <PaperclipIcon />
@@ -243,7 +243,7 @@ export default function IterationPanel({
             )
           })
         ) : (
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-6 text-sm leading-7 text-slate-600">
+          <div className="rounded-3xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-card)] px-5 py-6 text-sm leading-7 text-[var(--text-secondary)]">
             {placeholderExamples}
           </div>
         )}
@@ -255,13 +255,13 @@ export default function IterationPanel({
         )}
       </div>
 
-      <div className="border-t border-slate-200 pt-4">
+      <div className="border-t border-[var(--border-subtle)] pt-4">
         {additionalFileNames.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-2">
             {additionalFileNames.map((name) => (
               <span
                 key={name}
-                className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600"
+                className="inline-flex rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] px-3 py-1 text-xs font-medium text-[var(--text-secondary)]"
               >
                 {name}
               </span>
@@ -291,7 +291,7 @@ export default function IterationPanel({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-600 transition hover:border-slate-400 hover:text-slate-900"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--accent)] transition hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]"
             aria-label="Upload additional context"
           >
             <PaperclipIcon />
@@ -302,14 +302,14 @@ export default function IterationPanel({
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               placeholder="Describe how you want the draft refined"
-              className="min-h-24 w-full rounded-3xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+              className="min-h-24 w-full rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
             />
           </div>
 
           <button
             type="submit"
             disabled={!draft.trim() || isLoading}
-            className="rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:bg-[var(--text-muted)]"
           >
             Send
           </button>

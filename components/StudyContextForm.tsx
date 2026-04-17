@@ -106,12 +106,14 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
   }
 
   return (
-    <div className="space-y-8 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-7">
-      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Step 2</p>
+    <div className="space-y-8 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-6 sm:p-7">
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
+        Step 2
+      </p>
 
       <div className="grid gap-5 md:grid-cols-2">
-        <label className="space-y-2 text-sm text-slate-700">
-          <span className="font-medium text-slate-900">
+        <label className="space-y-2 text-sm text-[var(--text-secondary)]">
+          <span className="font-medium text-[var(--text-primary)]">
             Analysis Title <span className="text-rose-500">*</span>
           </span>
           <input
@@ -119,47 +121,47 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
             value={context.title}
             onChange={(event) => onChange({ ...context, title: event.target.value })}
             placeholder="e.g. Churn Drivers in Q3 Enterprise Accounts"
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>
 
-        <label className="space-y-2 text-sm text-slate-700">
-          <span className="font-medium text-slate-900">Sample / Dataset Description</span>
+        <label className="space-y-2 text-sm text-[var(--text-secondary)]">
+          <span className="font-medium text-[var(--text-primary)]">Sample / Dataset Description</span>
           <input
             value={context.population}
             onChange={(event) => onChange({ ...context, population: event.target.value })}
             placeholder="e.g. Q3 customer cohort, clinical trial participants, loan applicants aged 25-60"
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
-        <label className="space-y-2 text-sm text-slate-700">
-          <span className="font-medium text-slate-900">Key Question or Outcome</span>
+        <label className="space-y-2 text-sm text-[var(--text-secondary)]">
+          <span className="font-medium text-[var(--text-primary)]">Key Question or Outcome</span>
           <input
             value={context.primaryOutcome}
             onChange={(event) => onChange({ ...context, primaryOutcome: event.target.value })}
             placeholder="e.g. Predict 30-day churn, classify high-risk patients, identify revenue drivers"
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>
 
-        <label className="space-y-2 text-sm text-slate-700">
-          <span className="font-medium text-slate-900">Methods Used</span>
+        <label className="space-y-2 text-sm text-[var(--text-secondary)]">
+          <span className="font-medium text-[var(--text-primary)]">Methods Used</span>
           <input
             value={context.statisticalMethods}
             onChange={(event) => onChange({ ...context, statisticalMethods: event.target.value })}
             placeholder="e.g. Logistic regression, A/B test, ROC analysis, time series forecasting, linear mixed model"
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-500 focus:ring-4 focus:ring-slate-200"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-slate-900">Tone</h3>
-          <p className="text-sm text-slate-600">
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">Tone</h3>
+          <p className="text-sm text-[var(--text-secondary)]">
             Choose a writing preset and we&apos;ll suggest the default sections below.
           </p>
         </div>
@@ -173,16 +175,20 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
                 key={toneCard.tone}
                 type="button"
                 onClick={() => handleToneChange(toneCard.tone)}
-                className={`rounded-2xl border bg-white px-5 py-5 text-left transition ${
+                className={`rounded-2xl border bg-[var(--bg-card)] px-5 py-5 text-left transition ${
                   isActive
-                    ? 'border-slate-900 shadow-sm ring-2 ring-slate-900/10'
-                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'border-[var(--accent)] bg-[var(--accent-subtle)] shadow-sm ring-2 ring-[var(--accent-subtle)]'
+                    : 'border-[var(--border-subtle)] hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]'
                 }`}
               >
-                <div className="text-slate-700">{toneCard.icon}</div>
+                <div className="text-[var(--accent)]">{toneCard.icon}</div>
                 <div className="mt-4">
-                  <p className="text-lg font-semibold text-slate-900">{toneCard.label}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{toneCard.description}</p>
+                  <p className="text-lg font-semibold text-[var(--text-primary)]">
+                    {toneCard.label}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                    {toneCard.description}
+                  </p>
                 </div>
               </button>
             )
@@ -192,8 +198,8 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-slate-900">Sections to generate</h3>
-          <p className="text-sm text-slate-600">
+          <h3 className="text-sm font-medium text-[var(--text-primary)]">Sections to generate</h3>
+          <p className="text-sm text-[var(--text-secondary)]">
             Customize the exact sections Scribe should write. At least one section must stay
             selected.
           </p>
@@ -210,15 +216,15 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
                 onClick={() => toggleSection(section)}
                 className={`rounded-2xl border px-4 py-3 text-left transition ${
                   isSelected
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50'
+                    ? 'border-[var(--accent)] bg-[var(--accent-subtle)] text-[var(--text-primary)]'
+                    : 'border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]'
                 }`}
                 title={OUTPUT_SECTION_DESCRIPTIONS[section]}
               >
                 <span className="block text-sm font-semibold">{OUTPUT_SECTION_LABELS[section]}</span>
                 <span
                   className={`mt-1 block text-xs leading-5 ${
-                    isSelected ? 'text-slate-200' : 'text-slate-500'
+                    isSelected ? 'text-[var(--text-secondary)]' : 'text-[var(--text-muted)]'
                   }`}
                 >
                   {OUTPUT_SECTION_DESCRIPTIONS[section]}

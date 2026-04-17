@@ -74,13 +74,13 @@ export default function ManuscriptOutput({
   }
 
   return (
-    <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
+    <div className="rounded-[2rem] border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
+      <div className="flex flex-col gap-4 border-b border-[var(--border-subtle)] pb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
             Written Output
           </p>
-          <h2 className="mt-2 font-serif text-3xl font-semibold text-slate-900">
+          <h2 className="mt-2 font-serif text-3xl font-semibold text-[var(--text-primary)]">
             Draft Narrative
           </h2>
         </div>
@@ -89,7 +89,7 @@ export default function ManuscriptOutput({
           type="button"
           onClick={() => void downloadDocx(sections, title || 'Scribe Narrative')}
           disabled={isLoading || sections.length === 0}
-          className="rounded-full border border-slate-200 bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+          className="rounded-full border border-[var(--border-subtle)] bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:bg-[var(--accent-hover)] disabled:cursor-not-allowed disabled:bg-[var(--text-muted)]"
         >
           Download as .docx
         </button>
@@ -98,17 +98,17 @@ export default function ManuscriptOutput({
       <div className="mt-6">
         {isLoading ? (
           <div className="space-y-6">
-            <div className="animate-pulse space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-6">
-              <div className="h-6 w-28 rounded bg-slate-200" />
-              <div className="h-4 w-full rounded bg-slate-200" />
-              <div className="h-4 w-11/12 rounded bg-slate-200" />
-              <div className="h-4 w-10/12 rounded bg-slate-200" />
+            <div className="animate-pulse space-y-4 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-6">
+              <div className="h-6 w-28 rounded bg-[var(--border-subtle)]" />
+              <div className="h-4 w-full rounded bg-[var(--border-subtle)]" />
+              <div className="h-4 w-11/12 rounded bg-[var(--border-subtle)]" />
+              <div className="h-4 w-10/12 rounded bg-[var(--border-subtle)]" />
             </div>
-            <div className="animate-pulse space-y-4 rounded-3xl border border-slate-200 bg-slate-50 p-6">
-              <div className="h-6 w-28 rounded bg-slate-200" />
-              <div className="h-4 w-full rounded bg-slate-200" />
-              <div className="h-4 w-11/12 rounded bg-slate-200" />
-              <div className="h-4 w-10/12 rounded bg-slate-200" />
+            <div className="animate-pulse space-y-4 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] p-6">
+              <div className="h-6 w-28 rounded bg-[var(--border-subtle)]" />
+              <div className="h-4 w-full rounded bg-[var(--border-subtle)]" />
+              <div className="h-4 w-11/12 rounded bg-[var(--border-subtle)]" />
+              <div className="h-4 w-10/12 rounded bg-[var(--border-subtle)]" />
             </div>
           </div>
         ) : sections.length > 0 ? (
@@ -116,20 +116,20 @@ export default function ManuscriptOutput({
             {sections.map((section) => (
               <section key={section.type}>
                 <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-serif text-2xl font-semibold text-slate-900">
+                  <h3 className="font-serif text-2xl font-semibold text-[var(--text-primary)]">
                     {OUTPUT_SECTION_LABELS[section.type]}
                   </h3>
                   <button
                     type="button"
                     onClick={() => void handleCopy(section)}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                    className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)] hover:text-[var(--text-primary)]"
                   >
                     <ClipboardIcon />
                     {copiedSection === section.type ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-                <div className="mt-4 rounded-3xl border border-slate-100 bg-slate-50 px-6 py-6">
-                  <p className="whitespace-pre-wrap font-serif text-[1.05rem] leading-8 text-slate-800">
+                <div className="mt-4 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-6 py-6">
+                  <p className="whitespace-pre-wrap font-serif text-[1.05rem] leading-8 text-[var(--text-primary)]">
                     {section.content}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ export default function ManuscriptOutput({
             ))}
           </div>
         ) : (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-[var(--text-secondary)]">
             Generated analytical narrative sections will appear here.
           </p>
         )}

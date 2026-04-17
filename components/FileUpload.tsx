@@ -53,9 +53,15 @@ function getTypeLabel(type: UploadedFile['type']) {
 }
 
 function getTypeBadge(type: UploadedFile['type']) {
-  if (type === 'csv') return 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
-  if (type === 'image') return 'bg-blue-50 text-blue-700 ring-1 ring-blue-200'
-  return 'bg-slate-100 text-slate-700 ring-1 ring-slate-200'
+  if (type === 'csv') {
+    return 'bg-[var(--accent-subtle)] text-[var(--accent)] ring-1 ring-[var(--border-subtle)]'
+  }
+
+  if (type === 'image') {
+    return 'bg-[var(--bg-primary)] text-[var(--text-secondary)] ring-1 ring-[var(--border-subtle)]'
+  }
+
+  return 'bg-[var(--bg-primary)] text-[var(--text-secondary)] ring-1 ring-[var(--border-subtle)]'
 }
 
 export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
@@ -189,23 +195,27 @@ export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
           void parseFiles(event.dataTransfer.files)
         }}
         className={cn(
-          'w-full rounded-2xl border-2 border-dashed bg-slate-50 p-8 text-center transition',
+          'w-full rounded-2xl border-2 border-dashed bg-[var(--bg-primary)] p-8 text-center transition',
           isDragging
-            ? 'border-slate-900 bg-slate-100 shadow-inner'
-            : 'border-slate-300 hover:border-slate-400 hover:bg-slate-100'
+            ? 'border-[var(--accent)] bg-[var(--accent-subtle)] shadow-inner'
+            : 'border-[var(--border-subtle)] hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]'
         )}
       >
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Step 1</p>
-        <p className="mt-3 text-xl font-semibold text-slate-950">Upload your analysis outputs</p>
-        <p className="mt-2 text-sm leading-6 text-slate-600">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
+          Step 1
+        </p>
+        <p className="mt-3 text-xl font-semibold text-[var(--text-primary)]">
+          Upload your analysis outputs
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
           Drag CSV, image, or text outputs into the workspace, or click to browse.
         </p>
-        <p className="mt-4 text-xs uppercase tracking-[0.18em] text-slate-500">
+        <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[var(--text-muted)]">
           Supports CSV, Excel exports (.txt), figures (PNG, JPG), and pasted model summaries
         </p>
       </button>
 
-      <p className="text-sm leading-6 text-slate-600">
+      <p className="text-sm leading-6 text-[var(--text-secondary)]">
         Works with regression outputs, A/B test results, financial models, ROC curves,
         dashboards, or any analysis output.
       </p>
@@ -220,11 +230,11 @@ export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
         {displayFiles.map((file) => (
           <div
             key={file.id}
-            className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="min-w-0">
-              <p className="truncate font-medium text-slate-950">{file.name}</p>
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+              <p className="truncate font-medium text-[var(--text-primary)]">{file.name}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
                 <span
                   className={cn(
                     'inline-flex rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em]',
@@ -239,7 +249,7 @@ export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
             <button
               type="button"
               onClick={() => removeFile(file.id)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-500 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-subtle)] text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)] hover:text-[var(--accent)]"
               aria-label={`Remove ${file.name}`}
             >
               X
@@ -250,26 +260,26 @@ export default function FileUpload({ files, onFilesChange }: FileUploadProps) {
         {pendingFiles.map((file) => (
           <div
             key={file.id}
-            className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <div>
-              <p className="font-medium text-slate-900">{file.name}</p>
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-700 ring-1 ring-slate-200">
+              <p className="font-medium text-[var(--text-primary)]">{file.name}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[var(--text-muted)]">
+                <span className="inline-flex rounded-full bg-[var(--accent-subtle)] px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)] ring-1 ring-[var(--border-subtle)]">
                   {file.typeLabel}
                 </span>
                 <span>{formatFileSize(file.size)}</span>
               </div>
             </div>
-            <div className="inline-flex items-center gap-2 text-sm text-slate-600">
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-900" />
+            <div className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--border-subtle)] border-t-[var(--accent)]" />
               Parsing...
             </div>
           </div>
         ))}
 
         {displayFiles.length === 0 && pendingFiles.length === 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-5 text-sm text-slate-500">
+          <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-5 text-sm text-[var(--text-muted)]">
             No files uploaded yet.
           </div>
         )}
