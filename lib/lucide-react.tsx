@@ -50,6 +50,11 @@ function createIcon(name: string, iconNode: IconNode) {
 
 export const ArrowRight = createIcon('ArrowRight', [{ type: 'path', props: { d: 'M5 12h14' } }, { type: 'path', props: { d: 'm12 5 7 7-7 7' } }])
 
+export const ArrowDown = createIcon('ArrowDown', [
+  { type: 'path', props: { d: 'M12 5v14' } },
+  { type: 'path', props: { d: 'm5 12 7 7 7-7' } },
+])
+
 export const BarChart2 = createIcon('BarChart2', [
   { type: 'path', props: { d: 'M4 19.5h16' } },
   { type: 'path', props: { d: 'M7 16V10' } },
@@ -102,6 +107,12 @@ export const Settings2 = createIcon('Settings2', [
   { type: 'path', props: { d: 'M8 11V9' } },
   { type: 'path', props: { d: 'M17 15v-2' } },
   { type: 'path', props: { d: 'M17 21v-2' } },
+])
+
+export const Sparkles = createIcon('Sparkles', [
+  { type: 'path', props: { d: 'M12 3l1.4 3.6L17 8l-3.6 1.4L12 13l-1.4-3.6L7 8l3.6-1.4L12 3Z' } },
+  { type: 'path', props: { d: 'M5 14l.9 2.1L8 17l-2.1.9L5 20l-.9-2.1L2 17l2.1-.9L5 14Z' } },
+  { type: 'path', props: { d: 'M19 13l.9 2.1L22 16l-2.1.9L19 19l-.9-2.1L16 16l2.1-.9L19 13Z' } },
 ])
 
 export const Upload = createIcon('Upload', [

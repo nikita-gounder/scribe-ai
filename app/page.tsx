@@ -3,11 +3,13 @@
 import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
+  ArrowDown,
   ArrowRight,
   BarChart2,
   CheckCircle2,
   Cpu,
   Feather,
+  Sparkles,
   FlaskConical,
   MessageSquare,
   Settings2,
@@ -45,8 +47,8 @@ const steps = [
   },
   {
     id: 2,
-    label: '02 — Configure',
-    description: 'Set your tone and sections — get polished narrative instantly',
+    label: '02 — Context',
+    description: 'Set your tone and sections — get a polished narrative instantly',
     icon: Settings2,
   },
   {
@@ -85,6 +87,18 @@ export default function Home() {
     setCurrentStep(3)
     setGenerateError(null)
     setShowDemoBanner(true)
+
+    window.requestAnimationFrame(() => {
+      formSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
+  function resetToScratch() {
+    setUploadedFiles([])
+    setStudyContext(initialStudyContext)
+    setCurrentStep(1)
+    setGenerateError(null)
+    setShowDemoBanner(false)
 
     window.requestAnimationFrame(() => {
       formSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -143,14 +157,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-8 lg:px-10">
-        <header className="mb-16 border-b border-[var(--border-subtle)] py-20">
+        <header className="py-24">
           <div className="max-w-3xl space-y-4">
             <div className="flex items-center gap-3">
-              <Feather className="h-8 w-8 text-[var(--accent)]" strokeWidth={2} />
-              <h1 className="text-4xl font-bold text-[var(--text-primary)]">Scribe</h1>
+              <Feather size={48} className="text-[var(--accent)]" strokeWidth={1.5} />
+              <h1 className="text-6xl font-bold text-[var(--text-primary)]">Scribe</h1>
             </div>
 
-            <p className="max-w-[600px] text-xl font-normal text-[var(--text-secondary)]">
+            <p className="max-w-[600px] text-xl font-medium text-[var(--text-secondary)]">
               Turn your data outputs into polished written narrative — instantly.
             </p>
 
@@ -160,6 +174,38 @@ export default function Home() {
             </p>
           </div>
         </header>
+
+        <div className="relative">
+          <div className="absolute left-[16.666%] right-[16.666%] top-5 hidden border-t border-[var(--border-subtle)] lg:block" />
+          <div className="grid gap-4 md:grid-cols-3">
+            {steps.map((step) => {
+              const isActive = currentStep === step.id
+              const isComplete = currentStep > step.id
+              const Icon = isComplete ? CheckCircle2 : step.icon
+              const iconClass =
+                isComplete || isActive ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]'
+              const labelClass =
+                isActive || isComplete ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'
+
+              return (
+                <div
+                  key={step.id}
+                  className="relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5"
+                >
+                  <div className={cn('mb-4 flex items-center gap-3', iconClass)}>
+                    <Icon className="h-5 w-5" strokeWidth={2} />
+                    <p className={cn('font-semibold', labelClass)}>{step.label}</p>
+                  </div>
+                  <p className="text-sm leading-6 text-[var(--text-secondary)]">
+                    {step.description}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="border-t border-[var(--border-subtle)]" />
 
         {generateError && (
           <div className="fixed right-6 top-6 z-50 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 shadow-lg">
@@ -206,35 +252,14 @@ export default function Home() {
                 )
               })}
             </div>
-          </div>
-
-          <div className="relative">
-            <div className="absolute left-[16.666%] right-[16.666%] top-5 hidden border-t border-[var(--border-subtle)] lg:block" />
-            <div className="grid gap-4 md:grid-cols-3">
-              {steps.map((step) => {
-                const isActive = currentStep === step.id
-                const isComplete = currentStep > step.id
-                const Icon = isComplete ? CheckCircle2 : step.icon
-                const iconClass = isComplete || isActive ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]'
-                const labelClass = isActive || isComplete
-                  ? 'text-[var(--text-primary)]'
-                  : 'text-[var(--text-muted)]'
-
-                return (
-                  <div
-                    key={step.id}
-                    className="relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5"
-                  >
-                    <div className={cn('mb-4 flex items-center gap-3', iconClass)}>
-                      <Icon className="h-5 w-5" strokeWidth={2} />
-                      <p className={cn('font-semibold', labelClass)}>{step.label}</p>
-                    </div>
-                    <p className="text-sm leading-6 text-[var(--text-secondary)]">
-                      {step.description}
-                    </p>
-                  </div>
-                )
-              })}
+            <div className="mt-6 flex justify-center">
+              <button
+                type="button"
+                onClick={resetToScratch}
+                className="text-sm text-[var(--text-secondary)] transition hover:text-[var(--accent)]"
+              >
+                Or start with your own data →
+              </button>
             </div>
           </div>
 
@@ -434,9 +459,12 @@ export default function Home() {
 
         <section className="grid gap-10 border-t border-[var(--border-subtle)] py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div className="space-y-5">
-            <p className="text-xs uppercase tracking-[0.25em] text-[var(--text-muted)]">
-              WHY SCRIBE EXISTS
-            </p>
+            <div className="flex items-center gap-2 text-[var(--accent)]">
+              <Sparkles className="h-4 w-4" strokeWidth={1.8} />
+              <p className="text-xs uppercase tracking-[0.25em] text-[var(--text-muted)]">
+                WHY SCRIBE EXISTS
+              </p>
+            </div>
             <h2 className="max-w-[480px] text-2xl font-semibold text-[var(--text-primary)]">
               The analysis is done. Writing it up shouldn&apos;t take hours.
             </h2>
@@ -454,26 +482,54 @@ export default function Home() {
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
                 INPUT
               </p>
-              <div className="mt-3 rounded-md bg-[var(--bg-primary)] p-4 font-mono text-sm leading-7 text-[var(--text-primary)]">
-                <p>GFAP: β = 1.42, p &lt; .001</p>
-                <p>NfL: β = 1.28, p &lt; .001</p>
-                <p>AUC = 0.871</p>
-                <p>N = 245</p>
+              <div className="mt-3 overflow-hidden rounded-xl border border-[var(--border-subtle)]">
+                <div className="grid grid-cols-[1.4fr_0.8fr_0.9fr_0.8fr] bg-[var(--bg-primary)] px-3 py-2 text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                  <span>Biomarker</span>
+                  <span>β</span>
+                  <span>p-value</span>
+                  <span>AUC</span>
+                </div>
+                {[
+                  ['GFAP', '1.42', '<.001', '0.871'],
+                  ['NfL', '1.28', '<.001', '0.843'],
+                  ['pTau181', '1.53', '<.001', '0.901'],
+                  ['Aβ42', '-1.67', '<.001', '0.889'],
+                ].map((row, index) => (
+                  <div
+                    key={row[0]}
+                    className={cn(
+                      'grid grid-cols-[1.4fr_0.8fr_0.9fr_0.8fr] border-t border-[var(--border-subtle)] px-3 py-3 text-sm text-[var(--text-primary)]',
+                      index % 2 === 0 ? 'bg-[var(--bg-secondary)]' : 'bg-[var(--bg-card)]'
+                    )}
+                  >
+                    <span>{row[0]}</span>
+                    <span className="font-mono">{row[1]}</span>
+                    <span className="font-mono">{row[2]}</span>
+                    <span className="font-mono">{row[3]}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
             <div className="flex items-center justify-center text-[var(--accent)]">
-              <ArrowRight className="h-6 w-6" strokeWidth={2} />
+              <ArrowRight className="hidden h-7 w-7 md:block" strokeWidth={2} />
+              <ArrowDown className="h-7 w-7 md:hidden" strokeWidth={2} />
             </div>
 
             <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
                 OUTPUT
               </p>
-              <div className="mt-3 border-l-2 border-[var(--accent)] pl-4 text-sm leading-7 text-[var(--text-secondary)]">
-                <p>Glial fibrillary acidic protein (GFAP)</p>
-                <p>demonstrated a significant positive</p>
-                <p>association with disease severity...</p>
+              <div className="relative mt-3 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-6 py-6">
+                <div className="border-l-2 border-[var(--accent)] pl-4">
+                  <p className="whitespace-pre-wrap font-serif text-[1.05rem] leading-8 text-[var(--text-primary)]">
+                    Glial fibrillary acidic protein (GFAP) demonstrated{'\n'}
+                    a significant positive association with disease severity{'\n'}
+                    (β = 1.42, p &lt; .001, 95% CI [0.81, 2.03]). Phosphorylated{'\n'}
+                    tau (pTau181) similarly predicted cognitive decline...
+                  </p>
+                </div>
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 rounded-b-3xl bg-gradient-to-b from-transparent to-[var(--bg-card)]" />
               </div>
             </div>
           </div>
