@@ -94,7 +94,7 @@ export default function ResultsPage() {
               </span>
             </Link>
             <p className="text-sm text-[var(--text-secondary)]">
-              Turn your data outputs into polished written narrative — instantly
+              Instantly turn your data outputs into a polished written narrative.
             </p>
           </div>
 
