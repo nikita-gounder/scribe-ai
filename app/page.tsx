@@ -156,8 +156,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-8 lg:px-10">
-        <header className="py-24">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8 lg:px-10">
+        <header className="pb-14 pt-24">
           <div className="max-w-3xl space-y-4">
             <div className="flex items-center gap-3">
               <Feather size={48} className="text-[var(--accent)]" strokeWidth={1.5} />
@@ -165,10 +165,10 @@ export default function Home() {
             </div>
 
             <p className="max-w-[600px] text-xl font-medium text-[var(--text-secondary)]">
-              Turn your data outputs into polished written narrative — instantly.
+              Instantly turn your data outputs into a polished written narrative.
             </p>
 
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-base text-[var(--text-muted)]">
               For researchers, analysts, consultants, and data scientists who have the numbers but
               need the words.
             </p>
@@ -483,29 +483,25 @@ export default function Home() {
                 INPUT
               </p>
               <div className="mt-3 overflow-hidden rounded-xl border border-[var(--border-subtle)]">
-                <div className="grid grid-cols-[1.4fr_0.8fr_0.9fr_0.8fr] bg-[var(--bg-primary)] px-3 py-2 text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                <div className="grid grid-cols-[1.6fr_1fr] bg-[var(--bg-primary)] px-3 py-2 text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">
                   <span>Biomarker</span>
-                  <span>β</span>
                   <span>p-value</span>
-                  <span>AUC</span>
                 </div>
                 {[
-                  ['GFAP', '1.42', '<.001', '0.871'],
-                  ['NfL', '1.28', '<.001', '0.843'],
-                  ['pTau181', '1.53', '<.001', '0.901'],
-                  ['Aβ42', '-1.67', '<.001', '0.889'],
+                  ['GFAP', '<.001'],
+                  ['NfL', '<.001'],
+                  ['pTau181', '<.001'],
+                  ['Aβ42', '<.001'],
                 ].map((row, index) => (
                   <div
                     key={row[0]}
                     className={cn(
-                      'grid grid-cols-[1.4fr_0.8fr_0.9fr_0.8fr] border-t border-[var(--border-subtle)] px-3 py-3 text-sm text-[var(--text-primary)]',
+                      'grid grid-cols-[1.6fr_1fr] border-t border-[var(--border-subtle)] px-3 py-3 text-sm text-[var(--text-primary)]',
                       index % 2 === 0 ? 'bg-[var(--bg-secondary)]' : 'bg-[var(--bg-card)]'
                     )}
                   >
                     <span>{row[0]}</span>
                     <span className="font-mono">{row[1]}</span>
-                    <span className="font-mono">{row[2]}</span>
-                    <span className="font-mono">{row[3]}</span>
                   </div>
                 ))}
               </div>
@@ -524,12 +520,10 @@ export default function Home() {
                 <div className="border-l-2 border-[var(--accent)] pl-3">
                   <p className="whitespace-pre-wrap font-serif text-sm leading-6 text-[var(--text-primary)]">
                     Glial fibrillary acidic protein (GFAP) demonstrated{'\n'}
-                    a significant positive association with disease severity{'\n'}
-                    (β = 1.42, p &lt; .001, 95% CI [0.81, 2.03]). Phosphorylated{'\n'}
-                    tau (pTau181) similarly predicted cognitive decline...
+                    a significant positive association with disease
                   </p>
                 </div>
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-transparent to-[var(--bg-card)]" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-b from-transparent to-[var(--bg-card)]" />
               </div>
             </div>
           </div>
