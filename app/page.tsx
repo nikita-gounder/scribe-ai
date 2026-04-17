@@ -173,7 +173,9 @@ export default function Home() {
           <div className="max-w-3xl space-y-4">
             <div className="flex items-center gap-3">
               <Feather size={48} className="text-[var(--accent)]" strokeWidth={1.5} />
-              <h1 className="text-4xl font-bold text-[var(--text-primary)] md:text-6xl">Scribe</h1>
+              <h1 className="font-serif text-4xl font-bold tracking-tight text-[var(--accent)] md:text-6xl">
+                Scribe
+              </h1>
             </div>
 
             <p className="max-w-[780px] text-xl font-medium text-[var(--text-secondary)]">
