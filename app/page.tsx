@@ -230,14 +230,14 @@ export default function Home() {
                     key={preset.id}
                     type="button"
                     onClick={() => loadDemoPreset(preset)}
-                    className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 text-left transition hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]"
+                    className="flex h-full min-h-[122px] flex-col rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 text-left transition hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
                         <p className="text-base font-semibold text-[var(--text-primary)]">
                           {preset.label}
                         </p>
-                        <p className="mt-1.5 text-xs leading-5 text-[var(--text-secondary)]">
+                        <p className="mt-1.5 max-w-[22ch] text-xs leading-5 text-[var(--text-secondary)]">
                           {preset.description}
                         </p>
                       </div>
@@ -245,7 +245,7 @@ export default function Home() {
                         <Icon className="h-3.5 w-3.5" strokeWidth={1.9} />
                       </span>
                     </div>
-                    <p className="mt-3 text-xs font-medium text-[var(--accent)]">
+                    <p className="mt-auto pt-3 text-xs font-medium text-[var(--accent)]">
                       Try this demo →
                     </p>
                   </button>
