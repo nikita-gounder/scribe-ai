@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Feather } from 'lucide-react'
 
 import IterationPanel from '@/components/IterationPanel'
 import ManuscriptOutput from '@/components/ManuscriptOutput'
@@ -86,11 +87,11 @@ export default function ResultsPage() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
         <header className="flex items-center justify-between rounded-[2rem] border border-[var(--border-subtle)] bg-[var(--bg-card)] px-6 py-5 shadow-sm sm:px-8">
           <div className="space-y-1">
-            <Link
-              href="/"
-              className="font-serif text-3xl font-bold tracking-tight text-[var(--text-primary)]"
-            >
-              Scribe
+            <Link href="/" className="inline-flex items-center gap-2">
+              <Feather className="h-6 w-6 text-[var(--accent)]" strokeWidth={1.5} />
+              <span className="font-serif text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+                Scribe
+              </span>
             </Link>
             <p className="text-sm text-[var(--text-secondary)]">
               Turn your data outputs into polished written narrative — instantly
