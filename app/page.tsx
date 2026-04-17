@@ -520,16 +520,16 @@ export default function Home() {
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
                 OUTPUT
               </p>
-              <div className="relative mt-3 overflow-hidden">
-                <div className="border-l-2 border-[var(--accent)] pl-4">
-                  <p className="whitespace-pre-wrap font-serif text-[1.05rem] leading-8 text-[var(--text-primary)]">
+              <div className="relative mt-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-4 overflow-hidden">
+                <div className="border-l-2 border-[var(--accent)] pl-3">
+                  <p className="whitespace-pre-wrap font-serif text-sm leading-6 text-[var(--text-primary)]">
                     Glial fibrillary acidic protein (GFAP) demonstrated{'\n'}
                     a significant positive association with disease severity{'\n'}
                     (β = 1.42, p &lt; .001, 95% CI [0.81, 2.03]). Phosphorylated{'\n'}
                     tau (pTau181) similarly predicted cognitive decline...
                   </p>
                 </div>
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[var(--bg-card)]" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-transparent to-[var(--bg-card)]" />
               </div>
             </div>
           </div>
