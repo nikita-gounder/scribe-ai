@@ -81,11 +81,23 @@ export default function IterationPanel({
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const hasMessages = messages.length > 0
-  const placeholderExamples = useMemo(
+  const examplePrompts = useMemo(
     () =>
       "Ask me to refine your draft. Examples: 'Make the methods more concise', 'Rewrite this for an executive audience', 'Add context from the uploaded dashboard', 'Make the findings more technical'",
     []
   )
+
+  function getIterationError(status?: number) {
+    if (status === 429) {
+      return "You've reached the usage limit. Please try again in an hour."
+    }
+
+    if (status === 504) {
+      return 'Generation timed out — please try again.'
+    }
+
+    return 'Something went wrong — please try again.'
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -154,7 +166,13 @@ export default function IterationPanel({
       })
 
       if (!response.ok) {
-        throw new Error('Iteration failed')
+        setError(getIterationError(response.status))
+        onMessagesChange([
+          ...messages,
+          { role: 'user', content: newMessage, attachments },
+          { role: 'assistant', content: getIterationError(response.status) },
+        ])
+        return
       }
 
       const data: {
@@ -180,11 +198,11 @@ export default function IterationPanel({
       setAdditionalFiles([])
       setAdditionalFileNames([])
     } catch {
-      setError('Iteration failed — please try again')
+      setError(getIterationError())
       onMessagesChange([
         ...messages,
         { role: 'user', content: newMessage, attachments },
-        { role: 'assistant', content: 'Iteration failed — please try again' },
+        { role: 'assistant', content: getIterationError() },
       ])
     } finally {
       onLoadingChange(false)
@@ -244,7 +262,7 @@ export default function IterationPanel({
           })
         ) : (
           <div className="rounded-3xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-card)] px-5 py-6 text-sm leading-7 text-[var(--text-secondary)]">
-            {placeholderExamples}
+            {examplePrompts}
           </div>
         )}
 
@@ -301,7 +319,7 @@ export default function IterationPanel({
             <textarea
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
-              placeholder="Describe how you want the draft refined"
+              aria-label="Describe how you want the draft refined"
               className="min-h-24 w-full rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
             />
           </div>

@@ -120,7 +120,7 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
             required
             value={context.title}
             onChange={(event) => onChange({ ...context, title: event.target.value })}
-            placeholder="e.g. Churn Drivers in Q3 Enterprise Accounts"
+            aria-label="Analysis title"
             className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>
@@ -130,7 +130,7 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
           <input
             value={context.population}
             onChange={(event) => onChange({ ...context, population: event.target.value })}
-            placeholder="e.g. Q3 customer cohort, clinical trial participants, loan applicants aged 25-60"
+            aria-label="Sample or dataset description"
             className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>
@@ -142,7 +142,7 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
           <input
             value={context.primaryOutcome}
             onChange={(event) => onChange({ ...context, primaryOutcome: event.target.value })}
-            placeholder="e.g. Predict 30-day churn, classify high-risk patients, identify revenue drivers"
+            aria-label="Key question or outcome"
             className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>
@@ -152,7 +152,7 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
           <input
             value={context.statisticalMethods}
             onChange={(event) => onChange({ ...context, statisticalMethods: event.target.value })}
-            placeholder="e.g. Logistic regression, A/B test, ROC analysis, time series forecasting, linear mixed model"
+            aria-label="Methods used"
             className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent-subtle)]"
           />
         </label>

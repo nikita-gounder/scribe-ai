@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
+import { checkRateLimit, isGeminiTimeout, withGeminiTimeout } from '@/lib/api-guard'
 import { MANUSCRIPT_SYSTEM_PROMPT, buildUserPrompt } from '@/lib/prompts'
 import { GenerateRequest, OutputSection } from '@/types'
 
@@ -39,6 +40,9 @@ function resolveSectionContent(parsed: Record<string, unknown>, section: OutputS
 }
 
 export async function POST(req: NextRequest) {
+  const rateLimitResponse = checkRateLimit(req)
+  if (rateLimitResponse) return rateLimitResponse
+
   try {
     const body: GenerateRequest = await req.json()
     const { files, context } = body
@@ -64,7 +68,7 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    const result = await model.generateContent(contentParts)
+    const result = await withGeminiTimeout(model.generateContent(contentParts))
     const response = await result.response
     let raw = response.text()
 
@@ -84,6 +88,11 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     console.error('Generate error:', error)
+
+    if (isGeminiTimeout(error)) {
+      return NextResponse.json({ error: 'Generation timed out. Please try again.' }, { status: 504 })
+    }
+
     return NextResponse.json({ error: 'Generation failed' }, { status: 500 })
   }
 }

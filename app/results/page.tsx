@@ -37,22 +37,28 @@ export default function ResultsPage() {
       const storedResult = sessionStorage.getItem('scribe_result')
       const storedContext = sessionStorage.getItem('scribe_context')
 
-      if (storedResult) {
-        const parsedResult: GenerateResponse = JSON.parse(storedResult)
-        setSections(parsedResult.sections)
+      if (!storedResult || !storedContext) {
+        router.replace('/')
+        return
       }
 
-      if (storedContext) {
-        const parsedContext: StudyContext = JSON.parse(storedContext)
-        setContext(parsedContext)
+      const parsedResult: GenerateResponse = JSON.parse(storedResult)
+      const parsedContext: StudyContext = JSON.parse(storedContext)
+
+      if (!parsedResult.sections?.length) {
+        router.replace('/')
+        return
       }
+
+      setSections(parsedResult.sections)
+      setContext(parsedContext)
 
       setMessages([])
       setIsLoading(false)
     }, 0)
 
     return () => window.clearTimeout(timer)
-  }, [])
+  }, [router])
 
   useEffect(() => {
     if (!isLoading && sections.length > 0) {
@@ -116,8 +122,8 @@ export default function ResultsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid items-start gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="space-y-6">
+          <div className="flex flex-col gap-6 md:flex-row md:items-start">
+            <div className="space-y-6 md:min-w-0 md:flex-[1.2]">
               <div className="rounded-[2rem] border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--text-muted)]">
                   Analysis Context
@@ -162,15 +168,17 @@ export default function ResultsPage() {
               />
             </div>
 
-            <IterationPanel
-              context={context}
-              messages={messages}
-              originalSections={sections}
-              onMessagesChange={setMessages}
-              onSectionsUpdate={setSections}
-              isLoading={isIterating}
-              onLoadingChange={setIsIterating}
-            />
+            <div className="md:flex-[0.8]">
+              <IterationPanel
+                context={context}
+                messages={messages}
+                originalSections={sections}
+                onMessagesChange={setMessages}
+                onSectionsUpdate={setSections}
+                isLoading={isIterating}
+                onLoadingChange={setIsIterating}
+              />
+            </div>
           </div>
         )}
       </div>

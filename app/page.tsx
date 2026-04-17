@@ -120,6 +120,18 @@ export default function Home() {
         ? 'Please fill in all required fields'
         : ''
 
+  function showGenerateError(status?: number) {
+    if (status === 429) {
+      setGenerateError("You've reached the usage limit. Please try again in an hour.")
+    } else if (status === 504) {
+      setGenerateError('Generation timed out — please try again.')
+    } else {
+      setGenerateError('Something went wrong — please try again.')
+    }
+
+    window.setTimeout(() => setGenerateError(null), 3500)
+  }
+
   async function handleGenerate() {
     if (!canGenerate || isGenerating) return
 
@@ -139,7 +151,8 @@ export default function Home() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to generate written narrative.')
+        showGenerateError(response.status)
+        return
       }
 
       const result: GenerateResponse = await response.json()
@@ -147,8 +160,7 @@ export default function Home() {
       sessionStorage.setItem('scribe_context', JSON.stringify(studyContext))
       router.push('/results')
     } catch {
-      setGenerateError('Generation failed — please try again')
-      window.setTimeout(() => setGenerateError(null), 3500)
+      showGenerateError()
     } finally {
       setIsGenerating(false)
     }
@@ -161,7 +173,7 @@ export default function Home() {
           <div className="max-w-3xl space-y-4">
             <div className="flex items-center gap-3">
               <Feather size={48} className="text-[var(--accent)]" strokeWidth={1.5} />
-              <h1 className="text-6xl font-bold text-[var(--text-primary)]">Scribe</h1>
+              <h1 className="text-4xl font-bold text-[var(--text-primary)] md:text-6xl">Scribe</h1>
             </div>
 
             <p className="max-w-[780px] text-xl font-medium text-[var(--text-secondary)]">
@@ -177,7 +189,7 @@ export default function Home() {
 
         <div className="relative">
           <div className="absolute left-[16.666%] right-[16.666%] top-5 hidden border-t border-[var(--border-subtle)] lg:block" />
-          <div className="grid gap-3 md:grid-cols-3">
+          <div className="flex flex-col gap-3 md:flex-row">
             {steps.map((step) => {
               const isActive = currentStep === step.id
               const isComplete = currentStep > step.id
@@ -190,7 +202,7 @@ export default function Home() {
               return (
                 <div
                   key={step.id}
-                  className="relative rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4"
+                  className="relative rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 md:flex-1"
                 >
                   <div className={cn('mb-2.5 flex items-center gap-2.5', iconClass)}>
                     <Icon className="h-4.5 w-4.5" strokeWidth={2} />
@@ -216,7 +228,7 @@ export default function Home() {
         <section className="space-y-8 rounded-[2rem] border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-[var(--text-primary)]">See it in action</h2>
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {DEMO_PRESETS.map((preset) => {
                 const Icon =
                   preset.id === 'academic'

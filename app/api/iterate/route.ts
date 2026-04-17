@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
+import { checkRateLimit, isGeminiTimeout, withGeminiTimeout } from '@/lib/api-guard'
 import { MANUSCRIPT_SYSTEM_PROMPT } from '@/lib/prompts'
 import {
   IterationMessage,
@@ -13,6 +14,9 @@ import {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 export async function POST(req: NextRequest) {
+  const rateLimitResponse = checkRateLimit(req)
+  if (rateLimitResponse) return rateLimitResponse
+
   try {
     const {
       messages,
@@ -114,7 +118,7 @@ Always respond with a JSON object in this exact format:
       }
     }
 
-    const result = await model.generateContent(contentParts)
+    const result = await withGeminiTimeout(model.generateContent(contentParts))
     const response = await result.response
     let raw = response.text()
     raw = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
@@ -127,6 +131,11 @@ Always respond with a JSON object in this exact format:
     })
   } catch (error) {
     console.error('Iterate error:', error)
+
+    if (isGeminiTimeout(error)) {
+      return NextResponse.json({ error: 'Generation timed out. Please try again.' }, { status: 504 })
+    }
+
     return NextResponse.json({ error: 'Iteration failed' }, { status: 500 })
   }
 }

@@ -32,7 +32,7 @@ export const DEMO_PRESETS: DemoPreset[] = [
         id: uuidv4(),
         name: 'biomarker_analysis.txt',
         type: 'text',
-        rawContent: `Linear Regression: Biomarker ~ Disease Severity (MMSE)
+        rawContent: `Linear Regression: Biomarker ~ Motor Symptom Severity (MDS-UPDRS)
 
 GFAP:     β = 1.42, SE = 0.31, t = 4.58, p < .001, 95% CI [0.81, 2.03]
 NfL:      β = 1.28, SE = 0.29, t = 4.41, p < .001, 95% CI [0.71, 1.85]
@@ -40,18 +40,18 @@ Aβ42:     β = -1.67, SE = 0.35, t = -4.77, p < .001, 95% CI [-2.36, -0.98]
 pTau181:  β = 1.53, SE = 0.33, t = 4.64, p < .001, 95% CI [0.88, 2.18]
 tTau:     β = 1.19, SE = 0.28, t = 4.25, p < .001, 95% CI [0.64, 1.74]
 
-ROC Curve Analysis (Classifier: AD vs Control)
+ROC Curve Analysis (Classifier: Parkinson's Disease vs Control)
 GFAP:     AUC = 0.871, Sensitivity = 0.812, Specificity = 0.834
 NfL:      AUC = 0.843, Sensitivity = 0.798, Specificity = 0.801
 Aβ42:     AUC = 0.889, Sensitivity = 0.831, Specificity = 0.852
 pTau181:  AUC = 0.901, Sensitivity = 0.847, Specificity = 0.863
 tTau:     AUC = 0.856, Sensitivity = 0.809, Specificity = 0.821
 
-Sample: N=245 (Control n=82, MCI n=79, AD n=84)
+Sample: N=245 (Control n=82, Prodromal n=79, PD n=84)
 Mean age: 68.4 (SD=9.2), 54% female
 Software: R 4.3.1, packages: lm(), pROC, ggplot2`,
         parsedContent: `R MODEL OUTPUT:
-Linear Regression: Biomarker ~ Disease Severity (MMSE)
+Linear Regression: Biomarker ~ Motor Symptom Severity (MDS-UPDRS)
 
 GFAP:     β = 1.42, SE = 0.31, t = 4.58, p < .001, 95% CI [0.81, 2.03]
 NfL:      β = 1.28, SE = 0.29, t = 4.41, p < .001, 95% CI [0.71, 1.85]
@@ -59,14 +59,14 @@ Aβ42:     β = -1.67, SE = 0.35, t = -4.77, p < .001, 95% CI [-2.36, -0.98]
 pTau181:  β = 1.53, SE = 0.33, t = 4.64, p < .001, 95% CI [0.88, 2.18]
 tTau:     β = 1.19, SE = 0.28, t = 4.25, p < .001, 95% CI [0.64, 1.74]
 
-ROC Curve Analysis (Classifier: AD vs Control)
+ROC Curve Analysis (Classifier: Parkinson's Disease vs Control)
 GFAP:     AUC = 0.871, Sensitivity = 0.812, Specificity = 0.834
 NfL:      AUC = 0.843, Sensitivity = 0.798, Specificity = 0.801
 Aβ42:     AUC = 0.889, Sensitivity = 0.831, Specificity = 0.852
 pTau181:  AUC = 0.901, Sensitivity = 0.847, Specificity = 0.863
 tTau:     AUC = 0.856, Sensitivity = 0.809, Specificity = 0.821
 
-Sample: N=245 (Control n=82, MCI n=79, AD n=84)
+Sample: N=245 (Control n=82, Prodromal n=79, PD n=84)
 Mean age: 68.4 (SD=9.2), 54% female
 Software: R 4.3.1, packages: lm(), pROC, ggplot2`,
       },
