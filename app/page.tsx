@@ -164,7 +164,7 @@ export default function Home() {
               <h1 className="text-6xl font-bold text-[var(--text-primary)]">Scribe</h1>
             </div>
 
-            <p className="max-w-[600px] text-xl font-medium text-[var(--text-secondary)]">
+            <p className="max-w-[680px] text-xl font-medium text-[var(--text-secondary)]">
               Instantly turn your data outputs into a polished written narrative.
             </p>
 
