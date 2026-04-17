@@ -107,10 +107,7 @@ export default function Home() {
 
   const canContinueFromUpload = uploadedFiles.length > 0
   const hasRequiredContext = Boolean(
-    studyContext.title.trim() &&
-      studyContext.population.trim() &&
-      studyContext.primaryOutcome.trim() &&
-      studyContext.statisticalMethods.trim()
+    studyContext.title.trim() && studyContext.primaryOutcome.trim()
   )
   const canGenerate = uploadedFiles.length > 0 && hasRequiredContext
   const generateTooltip =

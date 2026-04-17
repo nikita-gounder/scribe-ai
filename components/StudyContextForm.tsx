@@ -138,7 +138,9 @@ export default function StudyContextForm({ context, onChange }: StudyContextForm
 
       <div className="grid gap-5 md:grid-cols-2">
         <label className="space-y-2 text-sm text-[var(--text-secondary)]">
-          <span className="font-medium text-[var(--text-primary)]">Key Question or Outcome</span>
+          <span className="font-medium text-[var(--text-primary)]">
+            Key Question or Outcome <span className="text-rose-500">*</span>
+          </span>
           <input
             value={context.primaryOutcome}
             onChange={(event) => onChange({ ...context, primaryOutcome: event.target.value })}
