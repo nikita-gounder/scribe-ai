@@ -164,7 +164,7 @@ export default function Home() {
               <h1 className="text-6xl font-bold text-[var(--text-primary)]">Scribe</h1>
             </div>
 
-            <p className="max-w-[680px] text-xl font-medium text-[var(--text-secondary)]">
+            <p className="max-w-[780px] text-xl font-medium text-[var(--text-secondary)]">
               Instantly turn your data outputs into a polished written narrative.
             </p>
 
@@ -177,7 +177,7 @@ export default function Home() {
 
         <div className="relative">
           <div className="absolute left-[16.666%] right-[16.666%] top-5 hidden border-t border-[var(--border-subtle)] lg:block" />
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-3">
             {steps.map((step) => {
               const isActive = currentStep === step.id
               const isComplete = currentStep > step.id
@@ -190,13 +190,13 @@ export default function Home() {
               return (
                 <div
                   key={step.id}
-                  className="relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5"
+                  className="relative rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4"
                 >
-                  <div className={cn('mb-4 flex items-center gap-3', iconClass)}>
-                    <Icon className="h-5 w-5" strokeWidth={2} />
-                    <p className={cn('font-semibold', labelClass)}>{step.label}</p>
+                  <div className={cn('mb-2.5 flex items-center gap-2.5', iconClass)}>
+                    <Icon className="h-4.5 w-4.5" strokeWidth={2} />
+                    <p className={cn('text-sm font-semibold', labelClass)}>{step.label}</p>
                   </div>
-                  <p className="text-sm leading-6 text-[var(--text-secondary)]">
+                  <p className="text-xs leading-5 text-[var(--text-secondary)]">
                     {step.description}
                   </p>
                 </div>
@@ -216,7 +216,7 @@ export default function Home() {
         <section className="space-y-8 rounded-[2rem] border border-[var(--border-subtle)] bg-[var(--bg-card)] p-6 shadow-sm sm:p-8">
           <div className="space-y-4">
             <h2 className="text-lg font-medium text-[var(--text-primary)]">See it in action</h2>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-3">
               {DEMO_PRESETS.map((preset) => {
                 const Icon =
                   preset.id === 'academic'
@@ -230,22 +230,22 @@ export default function Home() {
                     key={preset.id}
                     type="button"
                     onClick={() => loadDemoPreset(preset)}
-                    className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-5 text-left transition hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]"
+                    className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] p-4 text-left transition hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-lg font-semibold text-[var(--text-primary)]">
+                        <p className="text-base font-semibold text-[var(--text-primary)]">
                           {preset.label}
                         </p>
-                        <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                        <p className="mt-1.5 text-xs leading-5 text-[var(--text-secondary)]">
                           {preset.description}
                         </p>
                       </div>
-                      <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] p-2 text-[var(--accent)]">
-                        <Icon className="h-4 w-4" strokeWidth={1.9} />
+                      <span className="rounded-full border border-[var(--border-subtle)] bg-[var(--bg-card)] p-1.5 text-[var(--accent)]">
+                        <Icon className="h-3.5 w-3.5" strokeWidth={1.9} />
                       </span>
                     </div>
-                    <p className="mt-5 text-sm font-medium text-[var(--accent)]">
+                    <p className="mt-3 text-xs font-medium text-[var(--accent)]">
                       Try this demo →
                     </p>
                   </button>

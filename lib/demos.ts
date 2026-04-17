@@ -16,13 +16,13 @@ export const DEMO_PRESETS: DemoPreset[] = [
     id: 'academic',
     label: 'Academic',
     emoji: 'academic',
-    description: "CSF biomarker study in Alzheimer's disease",
+    description: "Blood biomarker study in Parkinson's disease",
     context: {
-      title: 'CSF Biomarkers as Diagnostic Indicators in Alzheimer’s Disease',
+      title: 'Blood Biomarkers as Diagnostic Indicators in Parkinson’s Disease',
       population:
-        'Adults aged 50-85 categorized as Control, Mild Cognitive Impairment, and Alzheimer’s Disease (N=245)',
+        'Adults aged 50-85 categorized as Control, prodromal Parkinsonian symptoms, and Parkinson’s Disease (N=245)',
       primaryOutcome:
-        'Which CSF biomarkers best discriminate between AD and control groups and correlate with cognitive decline',
+        'Which blood biomarkers best discriminate between Parkinson’s disease and control groups and correlate with motor symptom severity',
       statisticalMethods: 'Linear regression, ROC curve analysis, R 4.3.1 with lm() and pROC packages',
       outputTone: 'academic',
       outputSections: ['methods', 'results'],
