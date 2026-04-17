@@ -469,9 +469,9 @@ export default function Home() {
               The analysis is done. Writing it up shouldn&apos;t take hours.
             </h2>
             <p className="max-w-[520px] text-base leading-relaxed text-[var(--text-secondary)]">
-              Scribe was built out of a real frustration — staring at R output, ROC curves, and
-              regression tables, knowing exactly what the data showed, but facing hours of
-              translating it into prose. Whether you&apos;re a grad student finishing a manuscript,
+              Scribe was built out of a real frustration: staring at R model outputs and
+              regression tables, knowing exactly what the data shows, but facing hours of
+              translating it into text. Whether you&apos;re a grad student finishing a manuscript,
               a consultant writing up findings, or a data scientist documenting an experiment,
               Scribe gets you from numbers to narrative in seconds.
             </p>
@@ -520,7 +520,7 @@ export default function Home() {
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--text-muted)]">
                 OUTPUT
               </p>
-              <div className="relative mt-3 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-6 py-6">
+              <div className="relative mt-3 overflow-hidden">
                 <div className="border-l-2 border-[var(--accent)] pl-4">
                   <p className="whitespace-pre-wrap font-serif text-[1.05rem] leading-8 text-[var(--text-primary)]">
                     Glial fibrillary acidic protein (GFAP) demonstrated{'\n'}
@@ -529,7 +529,7 @@ export default function Home() {
                     tau (pTau181) similarly predicted cognitive decline...
                   </p>
                 </div>
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 rounded-b-3xl bg-gradient-to-b from-transparent to-[var(--bg-card)]" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[var(--bg-card)]" />
               </div>
             </div>
           </div>
